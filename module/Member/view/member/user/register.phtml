@@ -1,0 +1,200 @@
+<?php
+	echo $this->inlineScript()	
+		->appendFile($this->basePath() . '/limitless1/assets/js/plugins/notifications/jgrowl.min.js')
+		->appendFile($this->basePath() . '/limitless1/assets/js/plugins/ui/moment/moment.min.js')
+		->appendFile($this->basePath() . '/limitless1/assets/js/plugins/pickers/daterangepicker.js')
+		->appendFile($this->basePath() . '/limitless1/assets/js/plugins/pickers/anytime.min.js')
+		->appendFile($this->basePath() . '/limitless1/assets/js/plugins/pickers/pickadate/picker.js')
+		->appendFile($this->basePath() . '/limitless1/assets/js/plugins/pickers/pickadate/picker.date.js')
+		->appendFile($this->basePath() . '/limitless1/assets/js/plugins/pickers/pickadate/picker.time.js')
+		//->appendFile($this->basePath() . '/limitless1/assets/js/plugins/pickers/pickadate/legacy.js')
+		
+		->appendFile($this->basePath() . '/limitless1/assets/js/plugins/forms/selects/select2.min.js')
+		
+		->appendFile($this->basePath() . '/limitless1/assets/js/core/app.js')
+		->appendFile($this->basePath() . '/limitless1/assets/js/pages/picker_date.js')
+		->appendFile($this->basePath() . '/limitless1/assets/js/pages/form_select2.js')
+		
+		;
+?>
+<style type="text/css">
+.select2-selection--multiple .select2-search--inline .select2-search__field
+{
+	padding: 4px 0;
+}
+.select2-selection--multiple .select2-selection__choice
+{
+	padding: 4px 12px;
+}
+
+</style>
+
+<div class="page-header" style="padding-bottom:0px;">
+	<div class ="page-header-content">
+		<div class="page-title">
+			<h4><i class="icon-cart2 position-left"></i> <span class="text-semibold">Register New User</span> </h4>
+		</div>
+		
+		<div class="heading-elements">
+			<div class="heading-btn-group">
+						   
+					
+			</div>
+		</div>
+		
+	</div>
+	<div class="breadcrumb-line">
+		<ul class="breadcrumb">
+			<li><a href="<?php echo $this->url('user', array('controller'=>'user', 'action'=>'index')); ?>"><i class="icon-home2 position-left"></i> Home</a></li>
+			<li class="active">Register new User</li>
+		</ul>
+		
+	</div>
+</div>
+
+<div class="panel panel-flat">
+	   
+		
+    <div class="panel-body">
+    
+		<?php
+		$form->setAttribute('action', $this->url('user', array('action' => 'register')));
+		$form->prepare();
+
+		echo $this->form()->openTag($form);
+		echo $this->formHidden($form->get('user_id'));
+		?>
+		
+	
+		<div class="table-responsive ">
+		
+			<table style="width:100%; border-collapse: separate; border-spacing: 10px;">   
+			<tbody>
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('username')); ?></label>
+			<?php 
+			//echo $form->getInputFilter()->get("username")->isRequired();
+			if($form->getInputFilter()->get("username")->isRequired()){echo '<font size="3" color="red">*</font>';} ?>
+			</td>			
+			<td>
+				<?php echo $this->formInput($this->form->get('username')); ?>
+				<?php echo $this->formElementErrors($this->form->get('username')); ?>
+				
+			</td>
+			</tr>
+			
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('password')); ?></label>
+			<?php if($form->getInputFilter()->get("password")->isRequired()){echo '<font size="3" color="red">*</font>';} ?></td>			
+			<td>
+				<?php echo $this->formInput($this->form->get('password')); ?>
+				<?php echo $this->formElementErrors($this->form->get('password')); ?>				
+			</td>
+			</tr>
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('name')); ?></label>
+			<?php if($form->getInputFilter()->get("name")->isRequired()){echo '<font size="3" color="red">*</font>';} ?></td>			
+			<td>
+				<?php echo $this->formInput($this->form->get('name')); ?>
+				<?php echo $this->formElementErrors($this->form->get('name')); ?>	
+				<?php echo $this->formRow($form->get('member_id')); ?>				
+			</td>
+			</tr>
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('company')); ?></label>
+			<?php if($form->getInputFilter()->get("company")->isRequired()){echo '<font size="3" color="red">*</font>';} ?></td>			
+			<td>
+				<?php echo $this->formInput($this->form->get('company')); ?>
+				<?php echo $this->formElementErrors($this->form->get('company')); ?>				
+			</td>
+			</tr>
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('address1')); ?></label>
+			<?php if($form->getInputFilter()->get("address1")->isRequired()){echo '<font size="3" color="red">*</font>';} ?></td>			
+			<td>
+				<?php echo $this->formInput($this->form->get('address1')); ?>
+				<?php echo $this->formElementErrors($this->form->get('address1')); ?>				
+			</td>
+			</tr>
+			
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('address2')); ?></label>
+			<?php if($form->getInputFilter()->get("address2")->isRequired()){echo '<font size="3" color="red">*</font>';} ?></td>			
+			<td>
+				<?php echo $this->formInput($this->form->get('address2')); ?>
+				<?php echo $this->formElementErrors($this->form->get('address2')); ?>				
+			</td>
+			</tr>
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('address3')); ?></label>
+			<?php if($form->getInputFilter()->get("address3")->isRequired()){echo '<font size="3" color="red">*</font>';} ?></td>			
+			<td>
+				<?php echo $this->formInput($this->form->get('address3')); ?>
+				<?php echo $this->formElementErrors($this->form->get('address3')); ?>				
+			</td>
+			</tr>
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('city')); ?></label>
+			<?php if($form->getInputFilter()->get("city")->isRequired()){echo '<font size="3" color="red">*</font>';} ?></td>			
+			<td>
+				<?php echo $this->formInput($this->form->get('city')); ?>
+				<?php echo $this->formElementErrors($this->form->get('city')); ?>				
+			</td>
+			</tr>
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('state')); ?></label>
+			<?php if($form->getInputFilter()->get("state")->isRequired()){echo '<font size="3" color="red">*</font>';} ?></td>			
+			<td>
+				<?php echo $this->formInput($this->form->get('state')); ?>
+				<?php echo $this->formElementErrors($this->form->get('state')); ?>				
+			</td>
+			</tr>
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('zipcode')); ?></label>
+			<?php if($form->getInputFilter()->get("zipcode")->isRequired()){echo '<font size="3" color="red">*</font>';} ?></td>			
+			<td>
+				<?php echo $this->formInput($this->form->get('zipcode')); ?>
+				<?php echo $this->formElementErrors($this->form->get('zipcode')); ?>				
+			</td>
+			</tr>
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('countrycode')); ?></label>
+			<?php if($form->getInputFilter()->get("countrycode")->isRequired()){echo '<font size="3" color="red">*</font>';} ?></td>			
+			<td>
+				<?php echo $this->formSelect($this->form->get('countrycode')); ?>				
+				<?php echo $this->formElementErrors($this->form->get('countrycode')); ?>				
+			</td>
+			</tr>
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('phone')); ?></label>
+			<?php if($form->getInputFilter()->get("phone")->isRequired()){echo '<font size="3" color="red">*</font>';} ?></td>			
+			<td>
+				<?php echo $this->formInput($this->form->get('phone')); ?>
+				<?php echo $this->formElementErrors($this->form->get('phone')); ?>				
+			</td>
+			</tr>
+			<tr>
+			<td style="width:10%" ><label class="control-label 	"><?php echo $this->formLabel($this->form->get('email')); ?></label>
+			<?php if($form->getInputFilter()->get("email")->isRequired()){echo '<font size="3" color="red">*</font>';} ?></td>			
+			<td>
+				<?php echo $this->formInput($this->form->get('email')); ?>
+				<?php echo $this->formElementErrors($this->form->get('email')); ?>				
+			</td>
+			</tr>
+			
+			
+			</tbody>
+			</table>		
+		
+			<?php			
+			
+			echo $this->formSubmit($form->get('submit'));
+			
+			
+			?>
+		</div>
+		
+		<?php echo $this->form()->closeTag(); ?>
+	</div>    
+</div>
+    		

@@ -1,0 +1,28 @@
+<?php
+ $title = 'All Roles';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <p>
+     <a href="<?php echo $this->url('role', array('action'=>'add'));?>">Add new role</a>
+ </p>
+
+ <table class="table">
+ <tr>
+     <th>Role Name</th>
+     <th>Active</th>
+     <th>&nbsp;</th>
+ </tr>
+ <?php foreach ($roles as $role) : ?>
+ <tr>
+     <td><?php echo $this->escapeHtml($role->name);?></td>
+     <td><?php echo $this->escapeHtml($role->isActive);?></td>
+     <td>
+         <a href="<?php echo $this->url('role',
+             array('action'=>'edit', 'id' => $role->id));?>">Edit</a>
+         <a href="<?php echo $this->url('role',
+             array('action'=>'delete', 'id' => $role->id));?>">Delete</a>
+     </td>
+ </tr>
+ <?php endforeach; ?>
+ </table>

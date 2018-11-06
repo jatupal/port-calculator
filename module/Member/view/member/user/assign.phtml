@@ -1,0 +1,28 @@
+ <?php
+ $title = 'Assign User Group';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+ <?php
+ $form = $this->form;
+ $form->setAttribute('action', $this->url(
+     'user',
+     array(
+         'action' => 'assign',
+         'id'     => $this->user_id,
+     )
+ ));
+ $form->prepare();
+
+ echo $this->form()->openTag($form);
+ $form->setAttribute('action', $this->url('user', array('action' => 'assign')));
+ $form->prepare();
+ echo $this->form()->openTag($form);
+ echo $this->formRow($form->get('user'));
+ echo "<br>";
+ echo $this->formRow($form->get('groups'));
+ echo "<br>";
+  echo $this->formSubmit($form->get('submit'));
+ echo $this->form()->closeTag();
+ ?>

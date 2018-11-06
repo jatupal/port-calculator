@@ -1,0 +1,21 @@
+<?php
+
+ $title = 'Add new user group';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <?php
+ $form->setAttribute('action', $this->url('role-group', array('action' => 'add')));
+ $form->prepare();
+// var_dump($form->roles);
+ echo $this->form()->openTag($form);
+ echo $this->formHidden($form->get('group_id'));
+ echo $this->formRow($form->get('group_name'));
+ echo "<br>";
+ echo $this->formRow($form->get('member_id'));
+ echo "<br>";
+ echo $this->formRow($form->get('roles'));
+ echo "<br>";
+ echo $this->formSubmit($form->get('submit'));
+ echo $this->form()->closeTag();
+ ?>

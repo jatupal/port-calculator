@@ -1,0 +1,1097 @@
+<?php
+	echo $this->inlineScript()	
+		->appendFile($this->basePath() . '/assets/js/plugins/ui/1.11.2/jquery-ui.min.js')
+		;
+?>
+<!--<link type="text/css" href="<?php echo $baseUrl; ?>/calendar/themes/base/ui.all.css" rel="stylesheet" />	
+<link type="text/css" href="<?php echo $baseUrl; ?>/calendar/themes/demos.css" rel="stylesheet" />-->
+
+<!-- Theme JS files -->
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/notifications/jgrowl.min.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/ui/moment/moment.min.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/pickers/daterangepicker.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/pickers/anytime.min.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/pickers/pickadate/picker.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/pickers/pickadate/picker.date.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/pickers/pickadate/picker.time.js"></script>
+
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/forms/selects/select2.min.js"></script>
+
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/core/app.js"></script>
+
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/pages/components_popups.js"></script>
+
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/pages/picker_date.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/pages/form_select2.js"></script>
+
+
+<script>
+$(document).ready(function() {
+    if (location.hash) {
+        $("a[href='" + location.hash + "']").tab("show");
+    }
+    $(document.body).on("click", "a[data-toggle]", function(event) {
+		
+        if(this.getAttribute("href") != 'javascript:void(0);' && this.getAttribute("href") != 'javascript:void(0)'){
+			location.hash = this.getAttribute("href");
+			//event.preventDefault();
+			//console.log(this.getAttribute("href"));
+			$("#show_tabs").val(this.getAttribute("href"));
+			$("#show_tabs2").val(this.getAttribute("href"));
+
+			var scrollmem = $('html,body').scrollTop();
+			$('html,body').scrollTop(scrollmem);
+			
+		}
+		
+    });
+	
+	
+});
+$(window).on("popstate", function() {
+    var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
+    $("a[href='" + anchor + "']").tab("show");
+});
+</script>
+
+<script type="text/javascript">
+function change_value()
+{
+	with(window.document.MyForm_search){
+		method="post";
+		mode.value="change_value";
+		target = "";
+		action = baseUrl.value+"/reports/reports/stock-setting";
+		submit();
+	}
+}
+
+function add_port()
+{
+	with(window.document.MyForm_search){
+		method="post";
+		mode.value="add_port";
+		target = "";
+		action = baseUrl.value+"/reports/reports/stock-setting";
+		submit();
+	}
+}
+
+function Changepage(page_name, page)
+{
+	with(window.document.MyForm){
+		method="post";
+		mode.value="Changepage";
+		change_page_name.value = page_name;
+		change_page_value.value = page;
+		target = "";
+		action = baseUrl.value+"/reports/reports/stock-setting";
+		submit();
+	}
+}
+
+function changePerPage(prefix){
+	with(window.document.MyForm){
+		method="post";
+		mode.value="change_perpage";
+		target = "";
+		action = baseUrl.value+"/reports/reports/stock-setting";
+		submit();
+	}
+}
+
+function changePerPage2(prefix){
+	with(window.document.MyForm){
+		method="post";
+		mode.value="change_perpage";
+		target = "";
+		action = baseUrl.value+"/reports/reports/stock-setting";
+		submit();
+	}
+}
+
+function change_port()
+{
+	with(window.document.MyForm_search){
+		method="post";
+		mode.value="change_port";
+		target = "";
+		action = baseUrl.value+"/reports/reports/stock-setting";
+		submit();
+	}
+}
+
+function import_future_plan()
+{
+	with(window.document.MyForm_search){
+		if(import_future_port_id.value == ''){
+			alert('Please Select Port');
+			return false;
+		}
+		method="post";
+		mode.value="import_future_plan";
+		target = "";
+		action = baseUrl.value+"/reports/reports/stock-setting";
+		submit();
+	}
+}
+
+function download_template_future(){
+	with(window.document.MyForm_search){		
+		method="post";
+		target = "";
+		mode = '';
+		action = "<?php echo $baseUrl."/file/example_future_plan.xls"; ?>"; 
+		submit();
+	}
+}
+
+function import_option_plan()
+{
+	with(window.document.MyForm_search){
+		if(import_option_port_id.value == ''){
+			alert('Please Select Port');
+			return false;
+		}
+		method="post";
+		mode.value="import_option_plan";
+		target = "";
+		action = baseUrl.value+"/reports/reports/stock-setting";
+		submit();
+	}
+}
+
+function download_template_option(){
+	with(window.document.MyForm_search){		
+		method="post";
+		target = "";
+		mode = '';
+		action = "<?php echo $baseUrl."/file/example_option_plan.xls"; ?>"; 
+		submit();
+	}
+}
+
+function change_tabs(id1)
+{
+	with(window.document.MyForm){
+		method="post";
+		mode.value="change_tabs";
+		show_tabs.value=id1;
+		target = "";
+		action = baseUrl.value+"/reports/reports/stock-setting";
+		submit();
+	}
+}
+
+function save_value()
+{	
+	with(window.document.MyForm){
+		if(port_id.value == ''){
+			
+		}else{
+			method="post";
+			mode.value="save_value";
+			target = "";
+			action = baseUrl.value+"/reports/reports/stock-setting";
+			submit();
+		}
+	}
+}
+
+function delete_future_plan(){		
+	with(window.document.MyForm){
+		var r=confirm("Need to Delete Selected Future Transaction?");
+		if (r==true)
+		{
+			var strChoices = "";
+			var objCBarray = document.getElementsByName('id[]');
+			for (i = 0; i < objCBarray.length; i++) {
+				if (objCBarray[i].checked) {
+					strChoices += "* " + objCBarray[i].value + "\n";
+				}
+			}
+			if (strChoices.length > 0) {
+				
+			} else {
+				alert("Please Select Transaction to Delete.");
+				return false;
+			}
+		
+			method="post";
+			mode.value = 'delete_future_plan';
+			target = "";
+			action = baseUrl.value+"/reports/reports/stock-setting";
+			submit();
+		}
+	}
+}
+	
+function edit_stock(){		
+	with(window.document.MyForm){
+		method="post";
+		mode.value = 'start_edit_stock';
+		target = "";
+		action = baseUrl.value+"/reports/reports/edit-stock-setting";
+		submit();
+	}
+}
+
+function delete_option_plan(){		
+	with(window.document.MyForm){			
+		var r=confirm("Need to Delete Selected Option Transaction?");
+		if (r==true)
+		{
+			var strChoices = "";
+			var objCBarray = document.getElementsByName('id[]');
+			for (i = 0; i < objCBarray.length; i++) {
+				if (objCBarray[i].checked) {
+					strChoices += "* " + objCBarray[i].value + "\n";
+				}
+			}
+			if (strChoices.length > 0) {
+				
+			} else {
+				alert("Please Select Transaction to Delete.");
+				return false;
+			}
+			method="post";
+			mode.value = 'delete_option_plan';
+			target = "";
+			action = baseUrl.value+"/reports/reports/stock-setting";
+			submit();
+		}
+	}
+}
+
+function save_value2()
+{	
+	with(window.document.MyForm){
+		if(port_id.value == '' && port_name.value == ''){
+			alert('Please Input Port');
+			return false;
+		}
+		
+		method="post";
+		mode.value="save_value2";
+		target = "";
+		action = baseUrl.value+"/reports/reports/stock-setting";
+		submit();		
+	}
+}
+
+var flag = true;
+function handler(){	
+	var myCheckboxAsPHPArr = document.MyForm['id[]'];
+	var process1 = document.MyForm['process1'];
+	
+	if( myCheckboxAsPHPArr ){
+		if(myCheckboxAsPHPArr.length ==  undefined){
+			myCheckboxAsPHPArr.checked = flag;
+		}else{
+			for(i=0; i<myCheckboxAsPHPArr.length; i++){
+				myCheckboxAsPHPArr[i].checked = flag;
+			}
+		
+		}
+		
+		
+		flag = !flag;
+		process1.value = "all";
+
+	}
+}
+
+function handler2(){	
+	var check1 = document.MyForm['check1'];
+	var process1 = document.MyForm['process1'];
+	
+	check1.checked = false;
+	process1.value = "none";
+}
+
+function optionChanged(prefix){
+	var process1 = document.MyForm['process1'];
+	var check1 = document.MyForm['check1'];
+	var myCheckboxAsPHPArr = document.MyForm['id[]'];
+
+	if(process1.value == "all"){
+		if( myCheckboxAsPHPArr ){
+			if(myCheckboxAsPHPArr.length ==  undefined){
+				myCheckboxAsPHPArr.checked = true;
+			}else{
+				for(i=0; i<myCheckboxAsPHPArr.length; i++){
+					myCheckboxAsPHPArr[i].checked = true;
+				}
+			
+			}
+
+			check1.checked = true;
+		}
+		
+	}
+	else if(process1.value == "all_on_page"){
+		if( myCheckboxAsPHPArr ){
+			if(myCheckboxAsPHPArr.length ==  undefined){
+				myCheckboxAsPHPArr.checked = true;
+			}else{
+				for(i=0; i<myCheckboxAsPHPArr.length; i++){
+					myCheckboxAsPHPArr[i].checked = true;
+				}
+			
+			}
+
+		}
+		check1.checked = false;
+		
+	}
+	else{
+		if( myCheckboxAsPHPArr ){
+			if(myCheckboxAsPHPArr.length ==  undefined){
+				myCheckboxAsPHPArr.checked = false;
+			}else{
+				for(i=0; i<myCheckboxAsPHPArr.length; i++){
+					myCheckboxAsPHPArr[i].checked = false;
+				}
+			
+			}
+
+			check1.checked = false;
+		}
+	}
+	
+}
+
+</script>
+
+<div class="panel panel-flat">
+		
+		<div class="panel-body">
+			<!--<h4><i class="icon-stats-growth position-left"></i> <span class="text-semibold"></span><?php echo $this->translate("Reports", "default", $lang); ?></h4>-->
+			<form name="MyForm_search" method="POST" enctype="multipart/form-data">
+			<input type="hidden" name="baseUrl" value="<?php echo $baseUrl; ?>" >
+			<input type="hidden" name="show_tabs" id="show_tabs2" value="<?php echo $data['show_tabs']; ?>" >
+			<input type="hidden" name="mode" value="" >
+			
+			<div class="row">
+				<div class="col-md-8">
+				<table >
+				<tr>
+				<th>Portfolio <a href="#" data-toggle="modal" data-target="#modal_add_port"><i class="icon-plus-circle2"></i></a></th>
+				<?php if($data['show_tabs'] == '#option_plan'){ ?> 
+				<th>Type</th>
+				<?php } ?>
+				<th>Date From</th>
+				<th>Date To</th>
+				<th></th>
+				</tr>
+				
+				<tr>
+				<td>
+				<select name="port_id" class="form-control" onchange="javascript:change_port();">
+					<option value="" <?php if($data['port_id'] == ''){ echo "selected='selected'"; } ?>>All Port</option>
+					<?php if(!empty($ResultPort)){foreach($ResultPort as $result_port){ ?>
+						<option value="<?php echo $result_port['port_id']; ?>" <?php if($data['port_id'] == $result_port['port_id']){ echo "selected='selected'"; } ?>><?php echo $result_port['port_name']; ?></option>
+					<?php }} ?>
+				</select>
+				</td>
+				<?php if($data['show_tabs'] == '#option_plan'){ ?> 
+				<td>
+					<select name="type" class="form-control"required >
+					<option value="" <?php if($data['type'] == ''){ echo "selected='selected'"; } ?>>All</option>
+					<option value="Put" <?php if($data['type'] == 'Put'){ echo "selected='selected'"; } ?>>Put</option>
+					<option value="Call" <?php if($data['type'] == 'Call'){ echo "selected='selected'"; } ?>>Call</option>
+					</select>
+				</td>
+				<?php } ?>
+				<td><input type="text" name="date_from" class="form-control date_format" autocomplete="off" value="<?php echo $data['date_from']; ?>"size="10"></td>
+				<td><input type="text" name="date_to" class="form-control date_format" autocomplete="off" value="<?php echo $data['date_to']; ?>"size="10"></td>
+				<td><button type="button" onClick="javascript:change_value();"><?php echo $this->translate("Search","default",$lang); ?></button></td>
+				</tr>
+				</table>
+				</div>
+				<div class="col-md-4 text-right">
+					<?php if(isset($data['port_id']) and $data['port_id'] != ''){ ?>
+						<?php if($data['show_tabs'] == '#option_plan'){ ?> 
+							<table width="100%"><tr>
+							<td style="padding-left:20px">
+							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#import_option_plan" ><?php echo $this->translate("Import","default",$lang); ?></button>
+							</td>
+							<td style="padding-left:20px">
+							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_option_plan_1" ><?php echo $this->translate("Add","default",$lang); ?></button>
+							</td>
+							<td style="padding-left:20px">
+							<button type="button" class="btn btn-default" onClick="javascript:edit_stock()" ><?php echo $this->translate("Edit","default",$lang); ?></button>
+							</td>
+							<td style="padding-left:20px">
+							<button type="button" class="btn btn-default"  onClick="javascript:delete_option_plan()" ><?php echo $this->translate("Delete","default",$lang); ?></button>
+							</td>
+							</tr></table>
+							
+						<?php }else{ ?>
+							<table width="100%" ><tr>
+							<td style="padding-left:20px">
+							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#import_future_plan" ><?php echo $this->translate("Import","default",$lang); ?></button>
+							</td>
+							<td style="padding-left:20px">
+							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_future_plan_1" ><?php echo $this->translate("Add","default",$lang); ?></button>
+							</td>
+							<td style="padding-left:20px">
+							<button type="button" class="btn btn-default" onClick="javascript:edit_stock()" ><?php echo $this->translate("Edit","default",$lang); ?></button>
+							</td>
+							<td style="padding-left:20px">
+							<button type="button" class="btn btn-default"  onClick="javascript:delete_future_plan()" ><?php echo $this->translate("Delete","default",$lang); ?></button>
+							</td>
+							</tr></table>
+							
+						<?php } ?>
+					<?php } ?>
+				</div>				
+			</div>
+			
+			<?php if($complete_message != ''){ ?>     
+				<div class="alert alert-success alert-bordered">
+					<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
+					<?php echo $complete_message; ?>
+					<?php if(isset($ResultImport) and !empty($ResultImport)){ ?>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="javascript:void(0)" data-toggle="modal" title="Import" data-target="#result_import">Show Result</a>
+					<?php } ?>
+				</div> 
+			<?php } ?>
+			
+			<?php if($error_message != ''){ ?>     
+				<div class="alert alert-danger alert-bordered">
+					<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
+					<?php echo $error_message; ?>
+					<?php if(isset($ResultImport) and !empty($ResultImport)){ ?>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="javascript:void(0)" data-toggle="modal" title="Import" data-target="#result_import">Show Result</a>
+					<?php } ?>
+				</div> 
+			<?php } ?>
+			
+			<!-- Vertical form modal resut import  -->
+			<div id="result_import" class="modal fade" data-backdrop="static" >
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<?php if(isset($ResultImport) and !empty($ResultImport)){ ?>
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<?php if($data['show_tabs'] == '#option_plan'){ ?> 
+							<h5 class="modal-title">Result Import Option</h5>
+							<?php }else{ ?>
+							<h5 class="modal-title">Result Import Future</h5>
+							<?php } ?>
+						</div>	
+						<?php if($data['show_tabs'] == '#option_plan'){ ?> 
+						<table class="table">							
+							<tr>
+							<th>Result</th>
+							<th>Date</th>
+							<th>Transaction</th>
+							<th>Symbol</th>
+							<th>Type</th>
+							<th>Price</th>
+							<th>Premium</th>
+							<th>Amount</th>
+							</tr>
+							<?php foreach($ResultImport as $result_import){ 
+							if($result_import['error'] > 0){$result_import['result'] = '<font color="red">'.$result_import['result'].'</font>';}
+							?>
+							<tr>
+							<td><?php echo $result_import['result']; ?></td>
+							<td><?php if(isset($result_import['date'])){echo htmlspecialchars($result_import['date']);} ?></td>
+							<td><?php if(isset($result_import['transaction'])){echo htmlspecialchars($result_import['transaction']);} ?></td>
+							<td><?php if(isset($result_import['symbol'])){echo htmlspecialchars($result_import['symbol']);} ?></td>
+							<td><?php if(isset($result_import['type'])){echo htmlspecialchars($result_import['type']);} ?></td>
+							<td><?php if(isset($result_import['price'])){echo htmlspecialchars($result_import['price']);} ?></td>
+							<td><?php if(isset($result_import['premium'])){echo $result_import['premium'];} ?></td>
+							<td><?php if(isset($result_import['amount'])){echo $result_import['amount'];} ?></td>
+							
+							</tr>
+							<?php } ?>							
+						</table>
+						
+						<?php }else{ ?>
+						<table class="table">							
+							<tr>
+							<th>Result</th>
+							<th>Date</th>
+							<th>Transaction</th>
+							<th>Symbol</th>
+							<th>Price</th>
+							<th>Amount</th>
+							</tr>
+							<?php foreach($ResultImport as $result_import){ 
+							if($result_import['error'] > 0){$result_import['result'] = '<font color="red">'.$result_import['result'].'</font>';}
+							?>
+							<tr>
+							<td><?php echo $result_import['result']; ?></td>
+							<td><?php if(isset($result_import['date'])){echo htmlspecialchars($result_import['date']);} ?></td>
+							<td><?php if(isset($result_import['transaction'])){echo htmlspecialchars($result_import['transaction']);} ?></td>
+							<td><?php if(isset($result_import['symbol'])){echo htmlspecialchars($result_import['symbol']);} ?></td>
+							<td><?php if(isset($result_import['price'])){echo htmlspecialchars($result_import['price']);} ?></td>
+							<td><?php if(isset($result_import['amount'])){echo $result_import['amount'];} ?></td>
+							
+							</tr>
+							<?php } ?>							
+						</table>
+						
+						<?php } ?>						
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>							
+						</div>
+						
+						<?php } ?>
+					</div>
+				</div>
+			</div>
+			<!-- /vertical form modal resut import -->
+			
+			<div id="modal_add_port" class="modal fade" data-backdrop="static" >
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h5 class="modal-title">Add New Port</h5>
+						</div>
+						
+						<div class="modal-body">
+							<div class="row">	
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>Port Name</label>
+										<input type="text" class="form-control" name='port_name' value="" placeholder="Port Name">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal"><?php echo $this->translate("Close","default",$lang); ?></button>
+							<button type="button" class="btn btn-primary" onClick="javascript:add_port();" ><?php echo $this->translate("Add Port","default",$lang); ?></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="modal_add_port_2" class="modal fade" data-backdrop="static" >
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h5 class="modal-title">Add New Port</h5>
+						</div>
+						
+						<div class="modal-body">
+							<div class="row">	
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>Port Name</label>
+										<input type="text" class="form-control" name='port_name_2' value="" placeholder="Port Name">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal"><?php echo $this->translate("Close","default",$lang); ?></button>
+							<button type="button" class="btn btn-primary" onClick="javascript:add_port_2();" ><?php echo $this->translate("Add Port","default",$lang); ?></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- modal Import future-->
+			<div id="import_future_plan" class="modal" data-backdrop="static" >
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h5 class="modal-title">Import Future</h5>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<input class="file-styled form-control" type="file" name="file_master_future" />
+								<label style='color:red'>Use excel .xlsx</label>
+							</div>
+							<div class="form-group">
+								<label>Import To Port</label>
+								<select name="import_future_port_id" class="form-control" onchange="javascript:change_port();">
+									<option value="" <?php if($data['port_id'] == ''){ echo "selected='selected'"; } ?>>Select Port</option>
+									<?php if(!empty($ResultPort)){foreach($ResultPort as $result_port){ ?>
+										<option value="<?php echo $result_port['port_id']; ?>" <?php if($data['port_id'] == $result_port['port_id']){ echo "selected='selected'"; } ?>><?php echo $result_port['port_name']; ?></option>
+									<?php }} ?>
+								</select>
+							</div>
+							<a href="javascript:void(0)" onClick="javascript:download_template_future()" >Example file</a>
+															
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+							<button class="btn btn-primary btn-labeled" type="button" onClick="javascript:import_future_plan();"><b><i class="icon-file-upload"></i></b> Upload</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- modal Import future-->
+			
+			<!-- modal Import future-->
+			<div id="import_option_plan" class="modal" data-backdrop="static" >
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h5 class="modal-title">Import Option</h5>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<input class="file-styled form-control" type="file" name="file_master_option" />
+								<label style='color:red'>Use excel .xlsx</label>
+							</div>
+							
+							<div class="form-group">
+								<label>Import To Port</label>
+								<select name="import_option_port_id" class="form-control" onchange="javascript:change_port();">
+									<option value="" <?php if($data['port_id'] == ''){ echo "selected='selected'"; } ?>>Select Port</option>
+									<?php if(!empty($ResultPort)){foreach($ResultPort as $result_port){ ?>
+										<option value="<?php echo $result_port['port_id']; ?>" <?php if($data['port_id'] == $result_port['port_id']){ echo "selected='selected'"; } ?>><?php echo $result_port['port_name']; ?></option>
+									<?php }} ?>
+								</select>
+							</div>
+							<a href="javascript:void(0)" onClick="javascript:download_template_option()" >Example file</a>
+															
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+							<button class="btn btn-primary btn-labeled" type="button" onClick="javascript:import_option_plan();"><b><i class="icon-file-upload"></i></b> Upload</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- modal Import future-->
+			</form>
+			<br/>
+			
+			<form name="MyForm" method="POST" enctype="multipart/form-data">
+			<input type="hidden" name="baseUrl" value="<?php echo $baseUrl; ?>" >
+			<input type="hidden" name="mode" value="" >
+			<input type="hidden" name="show_tabs" id="show_tabs" value="<?php echo $data['show_tabs']; ?>" >
+			<input type="hidden" name="port_id" value="<?php echo $data['port_id']; ?>" >
+			<input type="hidden" name="port_id2" value="<?php echo $data['port_id2']; ?>" >
+			<input type="hidden" name="future_contact" value="<?php echo $data['future_contact']; ?>" >
+			<input type="hidden" name="option_contact" value="<?php echo $data['option_contact']; ?>" >
+			<input type="hidden" name="date_from" value="<?php echo $data['date_from']; ?>" >
+			<input type="hidden" name="date_to" value="<?php echo $data['date_to']; ?>" >
+			
+			<input type="hidden" name="change_page_name" value="" >
+			<input type="hidden" name="change_page_value" value="" >
+			
+			<input type="hidden" name="page1" value="<?php echo $data['page1']; ?>">
+			<input type="hidden" name="per_page1" value="<?php echo $data['per_page1']; ?>">
+			<input type="hidden" name="page2" value="<?php echo $data['page2']; ?>">
+			<input type="hidden" name="per_page2" value="<?php echo $data['per_page2']; ?>">
+			<?php if(isset($data['port_id']) and $data['port_id'] != ''){ ?>
+			<div class="panel panel-flat">
+			<div class="row">
+			<div class="panel-body">
+			<div class="tabbable tab-content-bordered">
+				<ul class="nav nav-tabs nav-tabs-solid nav-tabs-component">
+					<li <?php if(!isset($data['show_tabs']) || $data['show_tabs'] == '' || $data['show_tabs'] == '#future_plan'){echo 'class="active"';} ?>><a href="#future_plan" data-toggle="tab" onclick="change_tabs('#future_plan')">Future</a></li>					
+					<li <?php if(isset($data['show_tabs']) and $data['show_tabs'] == '#option_plan'){echo 'class="active"';} ?>><a href="#option_plan" data-toggle="tab" onclick="change_tabs('#option_plan')" >Option</a></li>
+				</ul>
+				<div class="tab-content">
+				<div class="tab-pane active" id="show_plan">
+				
+				<div class="row">
+					<?php if($data['show_tabs'] == '#option_plan'){ ?> 
+					<div class="col-md-12">
+						<div class="panel panel-flat">							
+							<div class="panel-body">
+							<div class="row">
+							<div class="col-md-8">
+							<?php echo $option_page_slide; ?>
+							</div>
+							<div class="col-md-4 text-right">
+							<?php echo $this->translate("Show", "default", $lang); ?>&nbsp;:&nbsp;&nbsp;<select name='per_page2' onchange="javascript:changePerPage2(this.value);" >
+							   <option value='20' <?php if(!isset($data['per_page2']) || $data['per_page2'] == '20'){ echo "selected='selected'"; } ?> >20</option>
+							   <option value='50' <?php if(isset($data['per_page2']) and $data['per_page2'] == '50'){ echo "selected='selected'"; } ?> >50</option>
+							   <option value='100' <?php if(isset($data['per_page2']) and $data['per_page2'] == '100'){ echo "selected='selected'"; } ?> >100</option>
+							   <option value='200' <?php if(isset($data['per_page2']) and $data['per_page2'] == '200'){ echo "selected='selected'"; } ?> >200</option>
+							</select>&nbsp;&nbsp;<?php echo $this->translate("Items/Pages", "default", $lang); ?>
+							</div>
+							</div>
+							<div class="table-responsive">
+							<table class="table">
+								<thead>
+								<tr>
+								<th>
+									<input type="checkbox" name="check1" id="check1" value="YES" style="display:inline" onClick="javascript:handler();"/>
+									<select id="process1" name="process1" style="width:20px;" onchange="optionChanged(this);">                
+										<option value="all" ><?php echo $this->translate("Select all","default",$lang); ?></option>
+										<option value="all_on_page" ><?php echo $this->translate("Select this page","default",$lang); ?></option>
+										<option value="" selected><?php echo $this->translate("Un-Select all","default",$lang); ?></option>
+									</select>							
+								</th>
+								<th style="padding-right:10px">Date</th>
+								<th style="padding-right:10px">Transaction</th>
+								<th style="padding-right:10px">Symbol</th>
+								<th style="padding-right:10px">Type</th>
+								<th style="padding-right:10px">Strike Price</th>
+								<th style="padding-right:10px">Premium</th>
+								<th style="padding-right:10px">Amount</th>
+								</tr>
+								</thead>
+								
+								<tbody>
+								<?php if(isset($ResultOptionPlan) and !empty($ResultOptionPlan)){ 
+									foreach($paginator_option1 as $id => $result_option){ 
+										$option_date = $result_option['date'];
+										$option_transaction_id = $result_option['transaction_id'];
+										$option_symbol = $result_option['symbol'];
+										$option_type = $result_option['type'];
+										$option_price = $result_option['price'];
+										$option_premium = $result_option['premium'];
+										$option_amount = $result_option['amount'];
+										?>
+										<tr>
+										<td><input name="id[]" type="checkbox" value="<?php echo $result_option["option_id"]; ?>" onClick="javascript:handler2();"></td>
+										<td><?php echo $option_date; ?></td>
+										<td><?php echo $option_transaction_id; ?></td>
+										<td><?php echo $option_symbol; ?></td>
+										<td><?php echo $option_type; ?></td>
+										<td><?php echo $option_price; ?></td>
+										<td><?php echo $option_premium; ?></td>
+										<td><?php echo $option_amount; ?></td>
+										</tr>
+									<?php } ?>
+								<?php } ?>
+								
+								</tbody>
+							</table>
+							</div>							
+					
+							</div>
+						</div>
+					</div>
+					
+					<?php }else{ ?> 
+					<div class="col-md-12">
+						<div class="panel panel-flat">							
+							<div class="panel-body">
+							<div class="row">
+							<div class="col-md-8">
+							<?php echo $future_page_slide; ?>
+							</div>
+							<div class="col-md-4 text-right">
+							<?php echo $this->translate("Show", "default", $lang); ?>&nbsp;:&nbsp;&nbsp;<select name='per_page1' onchange="javascript:changePerPage(this.value);" >
+							   <option value='20' <?php if(!isset($data['per_page']) || $data['per_page'] == '20'){ echo "selected='selected'"; } ?> >20</option>
+							   <option value='50' <?php if(isset($data['per_page']) and $data['per_page'] == '50'){ echo "selected='selected'"; } ?> >50</option>
+							   <option value='100' <?php if(isset($data['per_page']) and $data['per_page'] == '100'){ echo "selected='selected'"; } ?> >100</option>
+							   <option value='200' <?php if(isset($data['per_page']) and $data['per_page'] == '200'){ echo "selected='selected'"; } ?> >200</option>
+							</select>&nbsp;&nbsp;<?php echo $this->translate("Items/Pages", "default", $lang); ?>
+							</div>
+							</div>
+							<div class="table-responsive">
+							<table class="table">
+								<thead>
+								<tr>
+								<th>
+									<input type="checkbox" name="check1" id="check1" value="YES" style="display:inline" onClick="javascript:handler();"/>
+									<select id="process1" name="process1" style="width:20px;" onchange="optionChanged(this);">                
+										<option value="all" ><?php echo $this->translate("Select all","default",$lang); ?></option>
+										<option value="all_on_page" ><?php echo $this->translate("Select this page","default",$lang); ?></option>
+										<option value="" selected><?php echo $this->translate("Un-Select all","default",$lang); ?></option>
+									</select>							
+								</th>
+								<th style="padding-right:10px">Date</th>
+								<th style="padding-right:10px">Transaction</th>
+								<th style="padding-right:10px">Symbol</th>
+								<th style="padding-right:10px">Strike Price</th>
+								<th style="padding-right:10px">Amount</th>
+								</tr>
+								</thead>
+								
+								<tbody>
+								<?php if(isset($ResultFuturePlan) and !empty($ResultFuturePlan)){
+									$i = 1;
+									foreach($paginator_future1 as $id => $reault_future_plan){
+										$future_date = $reault_future_plan['date'];
+										$future_transaction_id = $reault_future_plan['transaction_id'];
+										$future_symbol = $reault_future_plan['symbol'];
+										$future_price = $reault_future_plan['price'];
+										$future_amount = $reault_future_plan['amount'];
+										?>
+										<tr>
+										<td><input name="id[]" type="checkbox" value="<?php echo $reault_future_plan["future_id"]; ?>" onClick="javascript:handler2();"></td>
+										<td><?php echo $future_date; ?></td>
+										<td><?php echo $future_transaction_id; ?></td>
+										<td><?php echo $future_symbol; ?></td>
+										<td><?php echo $future_price; ?></td>
+										<td><?php echo $future_amount; ?></td>
+										</tr>
+									<?php $i++; 
+									} ?>
+								<?php } ?>
+								</tbody>
+							</table>
+							
+							</div>
+							</div>
+						</div>
+					</div>
+					
+					<?php } ?>
+				</div>	
+				
+				</div>
+				</div>			
+			</div>
+			</div>
+			</div>			
+			</div>
+			<?php }else{ ?>
+			<div class="panel panel-flat">
+			<div class="row">
+			<div class="panel-body">
+			<h5>Please Select Port</h5>
+			</div>
+			</div>
+			</div>
+			<?php } ?>
+				
+			<br/>
+			
+			
+			</form>
+			
+			<form name="MyForm_Port1" method="POST" >
+			<input type="hidden" name="baseUrl" value="<?php echo $baseUrl; ?>" >
+			<input type="hidden" name="mode" value="add_future_plan" >
+			<input type="hidden" name="show_tabs" value="<?php echo $data['show_tabs']; ?>" >
+			<input type="hidden" name="port_id" value="<?php echo $data['port_id']; ?>" >
+			<input type="hidden" name="port_id2" value="<?php echo $data['port_id2']; ?>" >
+			<input type="hidden" name="future_contact" value="<?php echo $data['future_contact']; ?>" >
+			<input type="hidden" name="option_contact" value="<?php echo $data['option_contact']; ?>" >
+			<input type="hidden" name="type" value="<?php echo $data['type']; ?>" >
+			<input type="hidden" name="date_from" value="<?php echo $data['date_from']; ?>" >
+			<input type="hidden" name="date_to" value="<?php echo $data['date_to']; ?>" >
+			
+			<input type="hidden" name="change_page_name" value="" >
+			<input type="hidden" name="change_page_value" value="" >
+			
+			<input type="hidden" name="page1" value="<?php echo $data['page1']; ?>">
+			<input type="hidden" name="per_page1" value="<?php echo $data['per_page1']; ?>">
+			<input type="hidden" name="page2" value="<?php echo $data['page2']; ?>">
+			<input type="hidden" name="per_page2" value="<?php echo $data['per_page2']; ?>">
+			<input type="hidden" name="page3" value="<?php echo $data['page3']; ?>">
+			<input type="hidden" name="per_page3" value="<?php echo $data['per_page3']; ?>">
+			<input type="hidden" name="page4" value="<?php echo $data['page4']; ?>">
+			<input type="hidden" name="per_page4" value="<?php echo $data['per_page4']; ?>">
+			<div id="modal_future_plan_1" class="modal fade" data-backdrop="static" >
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h5 class="modal-title">Add Future Plan</h5>
+						</div>
+						
+						<div class="modal-body">
+							<div class="row">	
+								<table cellpadding="0" cellspacing="0" border="0" class="future-table" id="FutureTable">
+									<thead>
+									<tr>
+									<th style="padding-right:10px">Date</th>
+									<th style="padding-right:10px">Transaction</th>
+									<th style="padding-right:10px">Symbol</th>
+									<th style="padding-right:10px">Strike Price</th>
+									<th style="padding-right:10px">Amount</th>
+									<th style="padding-let:10px">Delete</th>
+									</tr>
+									</thead>
+									
+									<tbody id="FutureTableBody">
+									<tr>
+										<td><input type="text" name="future_date[]" class="form-control date_format" autocomplete="off" value=""size="10"></td>
+										<td><input type="text" name="future_transaction_id[]" class="form-control" value=""size="10"></td>
+										<td><input type="text" name="future_symbol[]" class="form-control" value=""size="10"></td>
+										<td><input type="text" name="future_price[]" class="form-control" required value=""size="10"></td>
+										<td><input type="text" name="future_amount[]" class="form-control" required value=""size="10"></td>
+										<td class="future-table__cell"><button class="future-table__del">x</button></td>
+									</tr>
+									</tbody>
+								</table>
+								<div class="future-table__add-row">
+									<span class="future-table__add"><i class="icon-plus-circle2" ></i> Add</span>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal"><?php echo $this->translate("Close","default",$lang); ?></button>
+							<button type="submit" class="btn btn-primary"  ><?php echo $this->translate("Add","default",$lang); ?></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			</form>
+			
+			<form name="MyForm_Port1_Option" method="POST" >
+			<input type="hidden" name="baseUrl" value="<?php echo $baseUrl; ?>" >
+			<input type="hidden" name="mode" value="add_option_plan" >
+			<input type="hidden" name="show_tabs" value="<?php echo $data['show_tabs']; ?>" >
+			<input type="hidden" name="port_id" value="<?php echo $data['port_id']; ?>" >
+			<input type="hidden" name="port_id2" value="<?php echo $data['port_id2']; ?>" >
+			<input type="hidden" name="future_contact" value="<?php echo $data['future_contact']; ?>" >
+			<input type="hidden" name="option_contact" value="<?php echo $data['option_contact']; ?>" >
+			<input type="hidden" name="type" value="<?php echo $data['type']; ?>" >
+			<input type="hidden" name="date_from" value="<?php echo $data['date_from']; ?>" >
+			<input type="hidden" name="date_to" value="<?php echo $data['date_to']; ?>" >
+			
+			<input type="hidden" name="change_page_name" value="" >
+			<input type="hidden" name="change_page_value" value="" >
+			
+			<input type="hidden" name="page1" value="<?php echo $data['page1']; ?>">
+			<input type="hidden" name="per_page1" value="<?php echo $data['per_page1']; ?>">
+			<input type="hidden" name="page2" value="<?php echo $data['page2']; ?>">
+			<input type="hidden" name="per_page2" value="<?php echo $data['per_page2']; ?>">
+			<input type="hidden" name="page3" value="<?php echo $data['page3']; ?>">
+			<input type="hidden" name="per_page3" value="<?php echo $data['per_page3']; ?>">
+			<input type="hidden" name="page4" value="<?php echo $data['page4']; ?>">
+			<input type="hidden" name="per_page4" value="<?php echo $data['per_page4']; ?>">
+			
+			<div id="modal_option_plan_1" class="modal fade" data-backdrop="static" >
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h5 class="modal-title">Add Option Plan</h5>
+						</div>
+						
+						<div class="modal-body">
+							<div class="row">	
+								<table cellpadding="0" cellspacing="0" border="0" class="future-table" id="OptionTable">
+									<thead>
+									<tr>
+									<th style="padding-right:10px">Date</th>
+									<th style="padding-right:10px">Transaction</th>
+									<th style="padding-right:10px">Symbol</th>
+									<th style="padding-right:10px">Type</th>
+									<th style="padding-right:10px">Strike Price</th>
+									<th style="padding-right:10px">Premium</th>
+									<th style="padding-right:10px">Amount</th>
+									<th style="padding-let:10px">Delete</th>
+									</tr>
+									</thead>
+									
+									<tbody id="OptionTableBody">
+									
+									<tr>
+										<td><input type="text" name="option_date[]" class="form-control date_format" autocomplete="off" value=""size="10"></td>
+										<td><input type="text" name="option_transaction_id[]" class="form-control" value=""size="10"></td>
+										<td><input type="text" name="option_symbol[]" class="form-control" value=""size="10"></td>
+										<td>
+											<select name="option_type[]" class="form-control" required>
+											<option value="">Select</option>
+											<option value="Put">Put</option>
+											<option value="Call">Call</option>
+											</select>
+										</td>
+										<td><input type="text" name="option_price[]" class="form-control" required value=""size="10"></td>
+										<td><input type="text" name="option_premium[]" class="form-control" required value="" size="10"></td>
+										<td><input type="text" name="option_amount[]" class="form-control" required value="" size="10"></td>
+										<td class="option-table__cell"><button class="option-table__del">x</button></td>
+									</tr>
+									
+									</tbody>
+								</table>
+								<div class="option-table__add-row">
+									<span class="option-table__add"><i class="icon-plus-circle2" ></i> Add</span>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal"><?php echo $this->translate("Close","default",$lang); ?></button>
+							<button type="submit" class="btn btn-primary"  ><?php echo $this->translate("Add","default",$lang); ?></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			</form>
+			
+			
+		</div>
+	
+</div>
+	
+
+<script>
+$(document).ready(function () {
+    $(document).on('click', '.future-table__add', function (e) {
+        var $el = $(e.currentTarget);
+        var $tableBody = $('#FutureTableBody');
+        var htmlString = $('#FutureTemplate').html();
+        $tableBody.append(htmlString);
+        return false;
+		$(".date_format").datepicker({dateFormat: 'yy-mm-dd'}); 
+    });
+
+    $(document).on('click', '.future-table__del', function (e) {
+        var $el = $(e.currentTarget);
+        var $row = $el.closest('tr');
+        $row.remove();
+        return false;
+    });
+    
+});
+</script>
+
+<script id="FutureTemplate" type="text/template">
+	<tr>
+		<td><input type="text" name="future_date[]" class="form-control date_format" autocomplete="off" value=""size="10"></td>
+		<td><input type="text" name="future_transaction_id[]" class="form-control" value=""size="10"></td>
+		<td><input type="text" name="future_symbol[]" class="form-control" value=""size="10"></td>
+		<td><input type="text" name="future_price[]" class="form-control" required value=""size="10"></td>
+		<td><input type="text" name="future_amount[]" class="form-control" required value=""size="10"></td>
+		<td class="future-table__cell"><button class="future-table__del">x</button></td>
+	</tr>
+</script>
+
+<script>
+$(document).ready(function () {
+    $(document).on('click', '.option-table__add', function (e) {
+        var $el = $(e.currentTarget);
+        var $tableBody = $('#OptionTableBody');
+        var htmlString = $('#OptionTemplate').html();
+        $tableBody.append(htmlString);
+		$(".date_format").datepicker({dateFormat: 'yy-mm-dd'}); 
+        return false;
+    });
+
+    $(document).on('click', '.option-table__del', function (e) {
+        var $el = $(e.currentTarget);
+        var $row = $el.closest('tr');
+        $row.remove();
+        return false;
+    });
+    
+	$(".date_format").datepicker({dateFormat: 'yy-mm-dd'}); 
+});
+</script>
+
+<script id="OptionTemplate" type="text/template">
+	<tr>
+		<td><input type="text" name="option_date[]" class="form-control date_format" autocomplete="off" value=""size="10"></td>
+		<td><input type="text" name="option_transaction_id[]" class="form-control" value=""size="10"></td>
+		<td><input type="text" name="option_symbol[]" class="form-control" value=""size="10"></td>
+		<td>
+			<select name="option_type[]" class="form-control"required >
+			<option value="">Select</option>
+			<option value="Put">Put</option>
+			<option value="Call">Call</option>
+			</select>
+		</td>
+		<td><input type="text" name="option_price[]" class="form-control"required value=""size="10"></td>
+		<td><input type="text" name="option_premium[]" class="form-control"required value="" size="10"></td>
+		<td><input type="text" name="option_amount[]" class="form-control"required value="" size="10"></td>
+		<td class="option-table__cell"><button class="option-table__del">x</button></td>
+	</tr>
+</script>

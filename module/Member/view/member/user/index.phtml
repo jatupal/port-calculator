@@ -1,0 +1,38 @@
+<?php
+ $title = 'All users';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <p>
+     <a href="<?php echo $this->url('user', array('action'=>'add'));?>">Add new user</a>
+ </p>
+
+ <table class="table">
+ <tr>
+     <th>Username</th>
+     <th>Email</th>
+     <th>&nbsp;</th>
+ </tr>
+ <?php foreach ($users as $user) : ?>
+ <tr>
+     <td><?php echo $this->escapeHtml($user->username);?></td>
+     <td><?php echo $this->escapeHtml($user->email);?></td>
+     <td>
+         <a href="<?php echo $this->url('user',
+             array('action'=>'edit', 'id' => $user->user_id));?>">Edit</a>|
+         <a href="<?php echo $this->url('user',
+             array('action'=>'assign', 'id' => $user->user_id));?>">Assign User Group</a>|
+	 <a href="<?php echo $this->url('user',
+             array('action'=>'delete', 'id' => $user->user_id));?>">Delete</a>
+     </td>
+ </tr>
+ <?php endforeach; ?>
+ </table>
+<?php
+//var_dump($data);
+/*
+	foreach($data as $d){
+		echo $d->role_name.'<br>';
+	}
+*/
+?>

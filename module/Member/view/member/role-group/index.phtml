@@ -1,0 +1,26 @@
+<?php
+ $title = 'All user groups';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <p>
+     <a href="<?php echo $this->url('role-group', array('action'=>'add'));?>">Add new user group</a>
+ </p>
+
+ <table class="table">
+ <tr>
+     <th>Group name</th>
+     <th>&nbsp;</th>
+ </tr>
+ <?php foreach ($usergroups as $userGroup) : ?>
+ <tr>
+     <td><?php echo $this->escapeHtml($userGroup->group_name);?></td>
+     <td>
+         <a href="<?php echo $this->url('user-group',
+             array('action'=>'edit', 'id' => $userGroup->group_id));?>">Edit</a>|
+	 <a href="<?php echo $this->url('user',
+             array('action'=>'delete', 'id' => $userGroup->group_id));?>">Delete</a>
+     </td>
+ </tr>
+ <?php endforeach; ?>
+ </table>

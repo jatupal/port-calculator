@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<?php echo $this->headTitle($this->translate('Stock AI'))->setSeparator(' - ')->setAutoEscape(false); ?>
+	<?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0'); ?>
+
+	
+
+
+	<!-- Theme JS files -->
+	<script type="text/javascript" src="assets/js/core/libraries/jquery_ui/full.min.js"></script>
+	<script type="text/javascript" src="assets/js/plugins/forms/selects/select2.min.js"></script>
+
+	<script type="text/javascript" src="assets/js/pages/form_select2.js"></script>
+	<!-- /theme JS files -->
+	
+	<!-- Le styles -->
+	<?php 
+	echo $this->headLink()
+			->prependStylesheet('https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900') 
+			->prependStylesheet($this->basePath() . '/limitless1/assets/css/icons/icomoon/styles.css')
+			->prependStylesheet($this->basePath() . '/limitless1/assets/css/bootstrap.css')
+			->prependStylesheet($this->basePath() . '/limitless1/assets/css/core.css') 
+			->prependStylesheet($this->basePath() . '/limitless1/assets/css/components.css') 
+			->prependStylesheet($this->basePath() . '/limitless1/assets/css/colors.css')
+	        ->prependStylesheet($this->basePath() . '/limitless1/assets/css/extras/animate.min.css');
+	?>
+
+	<!-- Scripts -->
+	<?php echo $this->headScript()->setAllowArbitraryAttributes(true)
+			
+		//<!-- Core JS files -->
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/loaders/pace.min.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/core/libraries/jquery.min.js') 
+			->appendFile($this->basePath() . '/limitless1/assets/js/core/libraries/bootstrap.min.js') 
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/loaders/blockui.min.js') 
+			->appendFile($this->basePath() . '/limitless1/assets/js/core/libraries/jquery_ui/full.min.js') 
+		//<!-- /core JS files -->	
+			
+		//<!-- Theme JS files -->
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/visualization/d3/d3.min.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/visualization/d3/d3_tooltip.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/forms/styling/switchery.min.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/forms/styling/uniform.min.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/forms/selects/bootstrap_multiselect.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/ui/moment/moment.min.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/pickers/daterangepicker.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/tables/footable/footable.min.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/forms/selects/select2.min.js')
+			
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/tables/datatables/datatables.min.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/tables/datatables/extensions/select.min.j')
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/tables/datatables/extensions/buttons.min.js')
+			
+			
+			->appendFile($this->basePath() . '/limitless1/assets/js/core/app.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/pages/datatables_advanced.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/pages/form_select2.js')
+
+			;
+		//<!-- /theme JS files -->
+		
+	?>
+
+</head>
+<script type="text/javascript">
+// Basic initialization
+$('.footable').footable({
+	// options
+});
+</script>
+
+<body>
+
+	<!-- Main navbar -->
+	<div class="navbar navbar-inverse">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="<?php echo $this->url('login', array('controller'=>'login', 'action'=>'index')); ?>">Stock Ai</a>
+			
+		</div>
+
+		<div class="navbar-collapse collapse" id="navbar-mobile">
+			<ul class="nav navbar-nav navbar-right">
+				<?php if (isset($this->user_id) and $this->user_id != '' ){ ?>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+					    <?php echo 'Welcome ('.ucfirst($this->username).') '; ?>
+						<i class="icon-cog7"></i>
+						<span class="caret"></span>
+					</a>
+
+				    <ul class="dropdown-menu dropdown-menu-solid">						
+    					<li><a href="#"><i class="icon-person"></i>Profile</a></li>
+    					<li><a href="<?php 
+						//echo $this->url('login', array('controller'=>'login', 'action'=>'logout')); 
+						echo $this->url('logout', array('action' => 'logout', ));
+						?>"><i class="icon-exit3"></i>Logout</a></li>						
+    				</ul>
+				</li>
+				<?php }else{ ?>
+				<li>
+				    <a href="<?php 						
+						echo $this->url('login', array('action' => 'login', ));
+						?>">Login	    
+					</a>
+				</li>
+				<?php  } ?>
+			</ul>
+		</div>
+	</div>
+	<!-- /main navbar -->
+
+
+	<!-- Page container -->
+	<div class="page-container login-container">
+
+		<!-- Page content -->
+		<div class="page-content">
+
+			<!-- Main content -->
+			<div class="content-wrapper">
+
+				<!-- Content area -->
+				<div class="content">
+					<?php echo $this->content; ?>
+					
+
+
+					<!-- Footer -->
+					<div class="footer text-muted">
+						&copy; 2016. Bookdee Co.,Ltd.
+					</div>
+					<!-- /footer -->
+
+				</div>
+				<!-- /content area -->
+
+			</div>
+			<!-- /main content -->
+
+		</div>
+		<!-- /page content -->
+
+	</div>
+	<!-- /page container -->
+
+</body>
+</html>

@@ -1,0 +1,583 @@
+<?php
+	echo $this->inlineScript()	
+		->appendFile($this->basePath() . '/assets/js/plugins/ui/1.11.2/jquery-ui.min.js')
+		;
+?>
+<!--<link type="text/css" href="<?php echo $baseUrl; ?>/calendar/themes/base/ui.all.css" rel="stylesheet" />	
+<link type="text/css" href="<?php echo $baseUrl; ?>/calendar/themes/demos.css" rel="stylesheet" />-->
+
+<!-- Theme JS files -->
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/notifications/jgrowl.min.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/ui/moment/moment.min.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/pickers/daterangepicker.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/pickers/anytime.min.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/pickers/pickadate/picker.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/pickers/pickadate/picker.date.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/pickers/pickadate/picker.time.js"></script>
+
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/plugins/forms/selects/select2.min.js"></script>
+
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/core/app.js"></script>
+
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/pages/components_popups.js"></script>
+
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/pages/picker_date.js"></script>
+<script type="text/javascript" src="<?php echo $baseUrl; ?>/limitless1/assets/js/pages/form_select2.js"></script>
+
+
+
+<script type="text/javascript">
+function change_value()
+{
+	with(window.document.MyForm_search){
+		method="post";
+		mode.value="change_value";
+		target = "";
+		action = baseUrl.value+"/reports/reports/index-old";
+		submit();
+	}
+}
+
+function add_port()
+{
+	with(window.document.MyForm_search){
+		method="post";
+		mode.value="add_port";
+		target = "";
+		action = baseUrl.value+"/reports/reports/index-old";
+		submit();
+	}
+}
+
+function add_index()
+{
+	with(window.document.MyForm_search){
+		method="post";
+		mode.value="add_index";
+		target = "";
+		action = baseUrl.value+"/reports/reports/index-old";
+		submit();
+	}
+}
+
+function calculate_value()
+{	
+	with(window.document.MyForm){
+		if(range_from.value < 0){
+			alert('Please Input Range From');
+			return false;
+		}
+		
+		if(range_to.value<0){
+			alert('Please Input Range To');
+			return false;
+		}
+		
+		if((range_to.value-0)<=(range_from.value-0)){
+			alert('Range To must more than Rang From');
+			return false;
+		}
+		
+		if(offset.value<=0){
+			alert('Please Input Range To');
+			return false;
+		}
+		
+		method="post";
+		mode.value="calculate_value";
+		target = "";
+		action = baseUrl.value+"/reports/reports/index-old";
+		submit();
+	}
+}
+
+function save_value()
+{	
+	with(window.document.MyForm){
+		if(port_id.value == ''){
+			
+		}else{
+			method="post";
+			mode.value="save_value";
+			target = "";
+			action = baseUrl.value+"/reports/reports/index-old";
+			submit();
+		}
+	}
+}
+
+function save_value2()
+{	
+	with(window.document.MyForm){
+		if(port_id.value == '' && port_name.value == ''){
+			alert('Please Input Port');
+			return false;
+		}
+		
+		method="post";
+		mode.value="save_value2";
+		target = "";
+		action = baseUrl.value+"/reports/reports/index-old";
+		submit();
+		
+	}
+}
+
+</script>
+
+<div class="panel panel-flat">
+		
+		<div class="panel-body">
+			<!--<h4><i class="icon-stats-growth position-left"></i> <span class="text-semibold"></span><?php echo $this->translate("Reports", "default", $lang); ?></h4>-->
+			<form name="MyForm_search" >
+			<input type="hidden" name="baseUrl" value="<?php echo $baseUrl; ?>" >
+			<input type="hidden" name="mode" value="" >
+			<div class="row">
+				<div class="col-md-12">
+				<table >
+				<tr>
+				<th>Portfolio <a href="#" data-toggle="modal" data-target="#modal_add_port"><i class="icon-plus-circle2"></i></a></th>
+				<th>Future/Contact</th>
+				<th>Option/Contact</th>
+				<th>Date From</th>
+				<th>Date To</th>
+				<th></th>
+				</tr>
+				
+				<tr>
+				<td>
+				<select name="port_id" class="form-control" onchange="javascript:change_port();">
+					<option value="" <?php if($data['port_id'] == ''){ echo "selected='selected'"; } ?>>All Port</option>
+					<?php if(!empty($ResultPort)){foreach($ResultPort as $result_port){ ?>
+						<option value="<?php echo $result_port['port_id']; ?>" <?php if($data['port_id'] == $result_port['port_id']){ echo "selected='selected'"; } ?>><?php echo $result_port['port_name']; ?></option>
+					<?php }} ?>
+				</select>
+				</td>
+				<td><input type="number" step="0.01" class="form-control" name="future_contact" value="<?php echo $data['future_contact']; ?>" placeholder=""></td>
+				<td><input type="number" step="0.01" class="form-control" name="option_contact" value="<?php echo $data['option_contact']; ?>" placeholder=""></td>
+				<td><input type="text" name="date_from" class="form-control date_format" autocomplete="off" value="<?php echo $data['date_from']; ?>"size="10"></td>
+				<td><input type="text" name="date_to" class="form-control date_format" autocomplete="off" value="<?php echo $data['date_to']; ?>"size="10"></td>
+				<td><button type="button" onClick="javascript:change_value();"><?php echo $this->translate("Search","default",$lang); ?></button></td>
+				</tr>
+				</table>
+				</div>
+			</div>
+			
+			<?php if($complete_message != ''){ ?>     
+				<div class="alert alert-success alert-bordered">
+					<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
+					<?php echo $complete_message; ?>
+				</div> 
+			<?php } ?>
+			
+			<?php if($error_message != ''){ ?>     
+				<div class="alert alert-danger alert-bordered">
+					<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
+					<?php echo $error_message; ?>
+				</div> 
+			<?php } ?>
+			
+			<div id="modal_add_port" class="modal fade" data-backdrop="static" >
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h5 class="modal-title">Add New Port</h5>
+						</div>
+						
+						<div class="modal-body">
+							<div class="row">	
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>Port Name</label>
+										<input type="text" class="form-control" name='port_name' value="" placeholder="Port Name">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal"><?php echo $this->translate("Close","default",$lang); ?></button>
+							<button type="button" class="btn btn-primary" onClick="javascript:add_port();" ><?php echo $this->translate("Add Port","default",$lang); ?></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="modal_add_index" class="modal fade" data-backdrop="static" >
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h5 class="modal-title">Add New Index</h5>
+						</div>
+						
+						<div class="modal-body">
+							<div class="row">	
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>Index Name</label>
+										<input type="text" class="form-control" name='index_name' value="" placeholder="Index Name">
+									</div>
+								</div>
+							</div>
+							<div class="row">	
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>Future/Contact</label>
+										<input type="text" class="form-control" name='new_future_contact' value="" placeholder="Future/Contact">
+									</div>
+								</div>
+							</div>
+							<div class="row">	
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>Option/Contact</label>
+										<input type="text" class="form-control" name='new_option_contact' value="" placeholder="Option/Contact">
+									</div>
+								</div>
+							</div>
+							
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal"><?php echo $this->translate("Close","default",$lang); ?></button>
+							<button type="button" class="btn btn-primary" onClick="javascript:add_index();" ><?php echo $this->translate("Add Index","default",$lang); ?></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			</form>
+			<br/>
+			
+			<form name="MyForm" >
+			<input type="hidden" name="baseUrl" value="<?php echo $baseUrl; ?>" >
+			<input type="hidden" name="mode" value="" >
+			<input type="hidden" name="port_id" value="<?php echo $data['port_id']; ?>" >
+			<input type="hidden" name="future_contact" value="<?php echo $data['future_contact']; ?>" >
+			<input type="hidden" name="option_contact" value="<?php echo $data['option_contact']; ?>" >
+			<input type="hidden" name="date_from" value="<?php echo $data['date_from']; ?>" >
+			<input type="hidden" name="date_to" value="<?php echo $data['date_to']; ?>" >
+			<div class="row">
+				<div class="col-md-12">
+				Range From <input type="number" step="0.01" name="range_from" value="<?php echo $data['range_from']; ?>"size="10">
+				&nbsp;To <input type="number" step="0.01" name="range_to" value="<?php echo $data['range_to']; ?>"size="10">
+				&nbsp;Offset <input type="number" step="0.01" name="offset" value="<?php echo $data['offset']; ?>"size="10">
+				<button type="button" onClick="javascript:calculate_value();"><?php echo $this->translate("Calculate","default",$lang); ?></button>
+				
+				<?php 
+				if($data['port_id'] == ''){ ?>
+				<button type="button" data-toggle="modal" data-target="#modal_save_new_value" ><?php echo $this->translate("Save","default",$lang); ?></button>
+				<?php }else{ ?>
+				<button type="button" onClick="javascript:save_value();"><?php echo $this->translate("Save","default",$lang); ?></button>
+				<?php } ?>
+				</div>
+				
+				<div id="modal_save_new_value" class="modal fade" data-backdrop="static" >
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h5 class="modal-title">Please Input Value</h5>
+							</div>							
+							<div class="modal-body">							
+								<?php if($data['port_id'] == ''){ ?>
+								<div class="row">	
+									<div class="col-md-12">
+										<div class="form-group">
+											<label>Port Name</label>
+											<input type="text" class="form-control" name='port_name' value="" placeholder="Port Name">
+										</div>
+									</div>
+								</div>
+								<?php }else{ ?>
+									<input type="hidden" name='port_name' value="" placeholder="Port Name">
+								<?php } ?>
+								<div class="row">	
+									<div class="col-md-12">
+										<div class="form-group">
+											<label>Future/Contact</label>
+											<input type="text" class="form-control" name='new_future_contact' value="" placeholder="Future/Contact">
+										</div>
+									</div>
+								</div>
+								<div class="row">	
+									<div class="col-md-12">
+										<div class="form-group">
+											<label>Option/Contact</label>
+											<input type="text" class="form-control" name='new_option_contact' value="" placeholder="Option/Contact">
+										</div>
+									</div>
+								</div>
+								
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-link" data-dismiss="modal"><?php echo $this->translate("Close","default",$lang); ?></button>
+								<button type="button" class="btn btn-primary" onClick="javascript:save_value2();" ><?php echo $this->translate("Add Index","default",$lang); ?></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+				
+				<?php if($data['range_from'] != '' and $data['range_to'] != '' and $data['offset'] > 0){ ?>
+				<div class="col-md-12">
+				<br/>
+				<div class="table-responsive ">
+				<table class="table" border="1">
+				<tr>
+					<th></th>
+					<?php 
+					$check_price = $data['range_from'];
+					while($check_price <= $data['range_to']){ ?>
+						<th><?php echo $check_price; ?></th>
+						<?php $check_price = $check_price + $data['offset'];
+						
+					} ?>
+				</tr>
+				<?php if(!empty($SumFuture)){ ?>
+					<tr>
+					<td>Future</td>
+					<?php foreach($SumFuture as $check_price => $sum_future){ ?>
+						<td><?php echo $sum_future; ?></td>
+					<?php } ?>
+					</tr>
+				<?php } ?>
+				
+				<?php if(!empty($SumOption)){ ?>
+					<tr>
+					<td>Option</td>
+					<?php foreach($SumOption as $check_price => $sum_option){ ?>
+						<td><?php echo $sum_option; ?></td>
+					<?php } ?>
+					</tr>
+				<?php } ?>
+				
+				<?php if(!empty($Total) and !empty($TotalSimulate)){ ?>
+					<tr>
+					<td>Total</td>
+					<?php foreach($Total as $check_price => $total){ ?>
+						<td><?php echo $total; ?></td>
+					<?php } ?>
+					</tr>
+				<?php } ?>
+				
+				<?php if(!empty($SumFutureSimulate)){ ?>
+					<tr>
+					<td>Sim. Future</td>
+					<?php foreach($SumFutureSimulate as $check_price => $sum_future){ ?>
+						<td><?php echo $sum_future; ?></td>
+					<?php } ?>
+					</tr>
+				<?php } ?>
+				
+				<?php if(!empty($SumOptionSimulate)){ ?>
+					<tr>
+					<td>Sim. Option</td>
+					<?php foreach($SumOptionSimulate as $check_price => $sum_option){ ?>
+						<td><?php echo $sum_option; ?></td>
+					<?php } ?>
+					</tr>
+				<?php } ?>
+				
+				<?php if(!empty($Total) and !empty($TotalSimulate)){ ?>
+					<tr>
+					<td>Total Sim.</td>
+					<?php foreach($TotalSimulate as $check_price => $sum_option){ ?>
+						<td><?php echo $sum_option; ?></td>
+					<?php } ?>
+					</tr>
+				<?php } ?>
+				
+				
+				<?php if(!empty($TotalSum)){ ?>
+					<tr>
+					<td>Summary</td>
+					<?php foreach($TotalSum as $check_price => $total_sum){ ?>
+						<td><?php echo $total_sum; ?></td>
+					<?php } ?>
+					</tr>
+				<?php } ?>
+				</table>
+				</div>
+				</div>
+				<?php } ?>
+			
+			</div>
+			<br/>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<div class="panel panel-flat">
+						<div class="panel-heading">
+							<h6 class="panel-title"><?php echo $this->translate("Future", "default", $lang); ?></h6>
+						</div>
+						<div class="panel-body">
+						<table cellpadding="0" cellspacing="0" border="0" class="future-table" id="FutureTable">
+							<thead>
+							<tr>
+							<th style="padding-right:10px">Date</th>
+							<th style="padding-right:10px">Symbol</th>
+							<th style="padding-right:10px">Strike Price</th>
+							<th style="padding-right:10px">Amount</th>
+							<th style="padding-let:10px">Delete</th>
+							</tr>
+							</thead>
+							
+							<tbody id="FutureTableBody">
+							<?php if(isset($data['future_date']) and !empty($data['future_date'])){ 
+								foreach($data['future_date'] as $id => $future_date){
+									$future_symbol = $data['future_symbol'][$id];
+									$future_price = $data['future_price'][$id];
+									$future_amount = $data['future_amount'][$id];
+									?>
+									<tr>
+									<td><input type="text" name="future_date[]" class="date_format" autocomplete="off" value="<?php echo $future_date; ?>"size="10"></td>
+									<td><input type="text" name="future_symbol[]" value="<?php echo $future_symbol; ?>"size="10"></td>
+									<td><input type="text" name="future_price[]" value="<?php echo $future_price; ?>"size="10"></td>
+									<td><input type="text" name="future_amount[]" value="<?php echo $future_amount; ?>"size="10"></td>
+									<td class="future-table__cell"><button class="future-table__del">x</button></td>
+									</tr>
+								<?php } ?>
+							<?php } ?>
+							</tbody>
+						</table>
+						<div class="future-table__add-row">
+							<span class="future-table__add"><i class="icon-plus-circle2" ></i> Add</span>
+						</div>
+				
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-md-6">
+					<div class="panel panel-flat">
+						<div class="panel-heading">
+							<h6 class="panel-title"><?php echo $this->translate("Option", "default", $lang); ?></h6>
+						</div>
+						<div class="panel-body">
+						<table cellpadding="0" cellspacing="0" border="0" class="future-table" id="OptionTable">
+							<thead>
+							<tr>
+							<th style="padding-right:10px">Date</th>
+							<th style="padding-right:10px">Symbol</th>
+							<th style="padding-right:10px">Type</th>
+							<th style="padding-right:10px">Strike Price</th>
+							<th style="padding-right:10px">Premium</th>
+							<th style="padding-right:10px">Amount</th>
+							<th style="padding-let:10px">Delete</th>
+							</tr>
+							</thead>
+							
+							<tbody id="OptionTableBody">
+							
+							<?php if(isset($data['option_date']) and !empty($data['option_date'])){ 
+								foreach($data['option_date'] as $id => $option_date){ 
+									$option_symbol = $data['option_symbol'][$id];
+									$option_type = $data['option_type'][$id];
+									$option_price = $data['option_price'][$id];
+									$option_premium = $data['option_premium'][$id];
+									$option_amount = $data['option_amount'][$id];
+									?>
+									<tr>
+									<td><input type="text" name="option_date[]" class="date_format" autocomplete="off" value="<?php echo $option_date; ?>"size="10"></td>
+									<td><input type="text" name="option_symbol[]" value="<?php echo $option_symbol; ?>"size="10"></td>
+									<td>
+									<select name="option_type[]" >
+										<option value="Put" <?php if($option_type == 'Put'){ echo "selected='selected'"; } ?>>Put</option>
+										<option value="Call" <?php if($option_type == 'Call'){ echo "selected='selected'"; } ?>>Call</option>
+									</select>
+									</td>
+									<td><input type="text" name="option_price[]" value="<?php echo $option_price; ?>"size="10"></td>
+									<td><input type="text" name="option_premium[]" value="<?php echo $option_premium; ?>"size="10"></td>
+									<td><input type="text" name="option_amount[]" value="<?php echo $option_amount; ?>"size="10"></td>
+									<td class="option-table__cell"><button class="option-table__del">x</button></td>
+									</tr>
+								<?php } ?>
+							<?php } ?>
+							
+							</tbody>
+						</table>
+						<div class="option-table__add-row">
+							<span class="option-table__add"><i class="icon-plus-circle2" ></i> Add</span>
+						</div>
+				
+						</div>
+					</div>
+				</div>
+			</div>			
+		
+			</form>
+		</div>
+	
+</div>
+
+
+<script>
+$(document).ready(function () {
+    $(document).on('click', '.future-table__add', function (e) {
+        var $el = $(e.currentTarget);
+        var $tableBody = $('#FutureTableBody');
+        var htmlString = $('#FutureTemplate').html();
+        $tableBody.append(htmlString);
+        return false;
+		$(".date_format").datepicker({dateFormat: 'yy-mm-dd'}); 
+    });
+
+    $(document).on('click', '.future-table__del', function (e) {
+        var $el = $(e.currentTarget);
+        var $row = $el.closest('tr');
+        $row.remove();
+        return false;
+    });
+    
+});
+</script>
+
+<script id="FutureTemplate" type="text/template">
+	<tr>
+		<td><input type="text" name="future_date[]" class="date_format" autocomplete="off" value=""size="10"></td>
+		<td><input type="text" name="future_symbol[]" value=""size="10"></td>
+		<td><input type="text" name="future_price[]" value=""size="10"></td>
+		<td><input type="text" name="future_amount[]" value=""size="10"></td>
+		<td class="future-table__cell"><button class="future-table__del">x</button></td>
+	</tr>
+</script>
+
+<script>
+$(document).ready(function () {
+    $(document).on('click', '.option-table__add', function (e) {
+        var $el = $(e.currentTarget);
+        var $tableBody = $('#OptionTableBody');
+        var htmlString = $('#OptionTemplate').html();
+        $tableBody.append(htmlString);
+		$(".date_format").datepicker({dateFormat: 'yy-mm-dd'}); 
+        return false;
+    });
+
+    $(document).on('click', '.option-table__del', function (e) {
+        var $el = $(e.currentTarget);
+        var $row = $el.closest('tr');
+        $row.remove();
+        return false;
+    });
+    
+	$(".date_format").datepicker({dateFormat: 'yy-mm-dd'}); 
+});
+</script>
+
+<script id="OptionTemplate" type="text/template">
+	<tr>
+		<td><input type="text" name="option_date[]" class="date_format" autocomplete="off" value=""size="10"></td>
+		<td><input type="text" name="option_symbol[]" value=""size="10"></td>
+		<td>
+			<select name="option_type[]" >
+			<option value="Put">Put</option>
+			<option value="Call">Call</option>
+			</select>
+		</td>
+		<td><input type="text" name="option_price[]" value=""size="10"></td>
+		<td><input type="text" name="option_premium[]" value="" size="10"></td>
+		<td><input type="text" name="option_amount[]" value="" size="10"></td>
+		<td class="option-table__cell"><button class="option-table__del">x</button></td>
+	</tr>
+</script>

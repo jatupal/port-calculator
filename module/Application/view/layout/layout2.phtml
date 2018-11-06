@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<?php echo $this->headTitle($this->translate('Calculator'))->setSeparator(' - ')->setAutoEscape(false); ?>
+	<?php //echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0'); ?>
+	
+	<!-- Layout styles -->
+	<?php 
+
+
+		$this->headLink()
+			->appendStylesheet('https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900')
+			->appendStylesheet($this->basePath() . '/calendar/themes/base/ui.all.css')
+			->appendStylesheet($this->basePath() . '/calendar/themes/demos.css')
+			->appendStylesheet($this->basePath() . '/limitless1/assets/css/icons/icomoon/styles.css')
+			->appendStylesheet($this->basePath() . '/limitless1/assets/css/bootstrap.css')
+			->appendStylesheet($this->basePath() . '/limitless1/assets/css/core.css')
+			->appendStylesheet($this->basePath() . '/limitless1/assets/css/components.css')
+			->appendStylesheet($this->basePath() . '/limitless1/assets/css/colors.css')
+			->appendStylesheet($this->basePath() . '/limitless1/assets/css/extras/animate.min.css')
+			;
+			
+		echo $this->headLink();
+	?>
+
+	<!-- Scripts -->
+	<?php echo $this->headScript()->setAllowArbitraryAttributes(true)
+			
+		//<!-- Core JS files -->
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/loaders/pace.min.js')
+			->appendFile($this->basePath() . '/limitless1/assets/js/core/libraries/jquery.min.js') 
+			->appendFile($this->basePath() . '/limitless1/assets/js/core/libraries/bootstrap.min.js') 
+			->appendFile($this->basePath() . '/limitless1/assets/js/plugins/loaders/blockui.min.js');
+			
+		//<!-- /core JS files -->	
+			
+	$sm = $this->getHelperPluginManager()->getServiceLocator();
+	
+	?>
+	<script type="text/javascript">
+	 /*menu handler*/
+	 $(function(){
+	   function stripTrailingSlash(str) {
+	  if(str.substr(-1) == '/') {
+		return str.substr(0, str.length - 1);
+	  }
+	  return str;
+	   }
+
+	   var url = window.location.pathname;  
+	   var activePage = stripTrailingSlash(url);
+
+	   $('.navigation li a').each(function(){  
+	  var currentPage = stripTrailingSlash($(this).attr('href'));
+
+	  if (activePage == currentPage) {
+		$(this).parent().addClass('active'); 
+	  } 
+	   });
+	 });
+	 
+	</script>
+	
+</head>
+
+
+<body>
+
+	<!-- Main navbar -->
+	<div class="navbar navbar-inverse">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="<?php echo $this->url('user', array('controller'=>'user', 'action'=>'index')); ?>"><?php echo $this->name; ?></a>
+			
+		</div>
+
+		<div class="navbar-collapse collapse" id="navbar-mobile">
+			<ul class="nav navbar-nav">
+				<li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3"></i></a></li>				
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<!-- language-switch -->
+				<li class="dropdown language-switch">
+					<?php $lang = $this->lang; ?>
+					<?php if($lang == "en_US" || $lang == "us_US"){ ?>
+					<a class="dropdown-toggle" data-toggle="dropdown">
+						<img src="<?php echo $this->basePath(); ?>/limitless1/assets/images/flags/us.png" class="position-left" alt="">English
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li><a class="thailand" id="changeLang" data="th_TH"><img src="<?php echo $this->basePath(); ?>/limitless1/assets/images/flags/th.png" alt="">Thai</a></li>
+					</ul>
+					<?php }else if($lang == "th_TH"){ ?>
+					<a class="dropdown-toggle" data-toggle="dropdown">
+						<img src="<?php echo $this->basePath(); ?>/limitless1/assets/images/flags/th.png" class="position-left" alt="">Thai
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li><a class="unitedstates" id="changeLang" data="en_US"><img src="<?php echo $this->basePath(); ?>/limitless1/assets/images/flags/us.png" alt="">English</a></li>
+					</ul>
+					<?php } ?>
+				</li>
+				
+				
+				<?php if (isset($this->user_id) and $this->user_id != '' ){ ?>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+					    <?php echo 'ยินดีต้อนรับ&nbsp;'.ucfirst($this->name).' '; ?>
+						<!--<i class="icon-cog7"></i>-->
+						<span class="caret"></span>
+					</a>
+
+				    <ul class="dropdown-menu dropdown-menu-solid">	
+						<li><a href="<?php echo $this->url('user', array('controller'=>'user', 'action'=>'edit', 'id' => $this->user_id)); ?>">
+							<i class="icon-person"></i>Profile</a>
+						</a></li>
+    					
+    					<li><a href="<?php 
+						//echo $this->url('login', array('controller'=>'login', 'action'=>'logout')); 
+						echo $this->url('logout', array('action' => 'logout', ));
+						?>"><i class="icon-exit3"></i>Logout</a></li>						
+    				</ul>
+				</li>
+				<?php }else{ ?>
+				<li>
+				    <a href="<?php 						
+						echo $this->url('login', array('action' => 'login', ));
+						?>">Login	    
+					</a>
+				</li>
+				<?php  } ?>
+				
+			</ul>
+		</div>
+	</div>
+	<!-- /main navbar -->
+
+
+	<!-- Page container -->
+	<div class="page-container">
+
+		<!-- Page content -->
+		<div class="page-content">
+
+			<!-- Main sidebar -->
+			<div class="sidebar sidebar-main">
+				<div class="sidebar-content">
+
+					<!-- User menu -->
+					
+					<div class="sidebar-user">
+						<div class="category-content">
+							<div class="media">
+								<a href="#" class="media-left">
+									<img src="<?php echo $this->basePath(); ?>/limitless1/assets/images/placeholder.jpg" class="img-circle img-sm" alt="">
+								</a>
+								<div class="media-body">
+									<span class="media-heading text-semibold"><?php echo $this->name; ?></span>
+								</div>
+
+								<div class="media-right media-middle">
+									<ul class="icons-list">
+										<li class="dropdown">
+											<a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog3"></i><span class="caret"></span></a>
+											<ul class="dropdown-menu dropdown-menu-right">	
+												<li><a href="<?php echo $this->url('user', array('controller'=>'user', 'action'=>'profile',)); ?>"><i class="icon-person"></i><?php echo $this->translate("Profile", "default", $lang); ?></a></li>
+												<li><a href="<?php echo $this->url('logout', array('action' => 'logout', )); ?>"><i class="icon-switch"></i><?php echo $this->translate("Logout", "default", $lang); ?></a></li>				
+											</ul>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- /user menu -->
+
+					<!-- Main navigation -->
+					<div class="sidebar-category sidebar-category-visible">
+						<div class="category-content no-padding">
+							<ul class="navigation navigation-main navigation-accordion">
+                                
+								<!-- Main -->	
+								<!--<li><a href="<?php echo $this->url('reports/default', array('controller'=>'reports', 'action'=>'setting')); ?>"></i> <span>Port Setting</span></a></li>-->
+								
+								<li><a href="<?php echo $this->url('reports/default', array('controller'=>'reports', 'action'=>'index', 'clear_sec'=>1)); ?>"><i class="icon-calculator"></i><span>Port Calculator</span></a></li>
+								
+								<li><a href="<?php echo $this->url('reports/default', array('controller'=>'reports', 'action'=>'index-old', 'clear_sec'=>1)); ?>"><i class="icon-calculator"></i><span>Port Calculator Old</span></a></li>
+								
+								
+								<li><a href="<?php echo $this->url('reports/default', array('controller'=>'reports', 'action'=>'stock-setting', 'clear_sec'=>1)); ?>"><i class="icon-calculator"></i><span>Stock Management</span></a></li>
+								<!--<li><a href="<?php echo $this->url('reports/default', array('controller'=>'reports', 'action'=>'port-calculator')); ?>"> <span>Port Simulator</span></a></li>-->
+								
+								<?php echo $this->navigation()->menu()->render() ?>
+
+							</ul>
+						</div>
+					</div>
+					<!-- /main navigation -->
+
+				</div>
+			</div>
+			<!-- /main sidebar -->
+
+
+			<!-- Main content -->
+			<div class="content-wrapper">
+
+
+				<!-- Content area -->
+				<div class="content">
+					
+					<?php echo $this->content; ?>
+					
+					<!-- Footer -->
+					<div class="footer text-muted">
+						&copy; 2016. Bookdee Co.,Ltd.
+					</div>
+					<!-- /footer -->
+
+				</div>
+				<!-- /content area -->
+
+			</div>
+			<!-- /main content -->
+
+		</div>
+		<!-- /page content -->
+
+	</div>
+	<!-- /page container -->
+
+</body>
+</html>
