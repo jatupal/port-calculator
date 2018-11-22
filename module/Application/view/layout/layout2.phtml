@@ -69,7 +69,7 @@
 </head>
 
 
-<body>
+<body class="sidebar-xs has-detached-left">
 
 	<!-- Main navbar -->
 	<div class="navbar navbar-inverse">
@@ -189,10 +189,10 @@
 								
 								<li><a href="<?php echo $this->url('reports/default', array('controller'=>'reports', 'action'=>'index', 'clear_sec'=>1)); ?>"><i class="icon-calculator"></i><span>Port Calculator</span></a></li>
 								
-								<li><a href="<?php echo $this->url('reports/default', array('controller'=>'reports', 'action'=>'index-old', 'clear_sec'=>1)); ?>"><i class="icon-calculator"></i><span>Port Calculator Old</span></a></li>
+								<!--<li><a href="<?php echo $this->url('reports/default', array('controller'=>'reports', 'action'=>'index-old', 'clear_sec'=>1)); ?>"><i class="icon-calculator"></i><span>Port Calculator Old</span></a></li>-->
 								
 								
-								<li><a href="<?php echo $this->url('reports/default', array('controller'=>'reports', 'action'=>'stock-setting', 'clear_sec'=>1)); ?>"><i class="icon-calculator"></i><span>Stock Management</span></a></li>
+								<li><a href="<?php echo $this->url('reports/default', array('controller'=>'reports', 'action'=>'stock-setting', 'clear_sec'=>1)); ?>"><i class="icon-calculator"></i><span>Transaction Management</span></a></li>
 								<!--<li><a href="<?php echo $this->url('reports/default', array('controller'=>'reports', 'action'=>'port-calculator')); ?>"> <span>Port Simulator</span></a></li>-->
 								
 								<?php echo $this->navigation()->menu()->render() ?>

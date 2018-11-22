@@ -84,7 +84,10 @@ class ReportsController extends AbstractActionController
 			if(isset($ReportSession->data)){
 				$data = $ReportSession->data;
 			}else{
-				$data = array();    
+				$data = array();
+				$data['show_port1'] = 'yes';
+				$data['show_port2'] = 'yes';
+				$data['show_summary'] = 'yes';
 			}			    
         }		
 		if(!isset($data['port_id'])){$data['port_id'] = '';}
@@ -97,7 +100,14 @@ class ReportsController extends AbstractActionController
 		if(!isset($data['current_price'])){$data['current_price'] = '1000';}
 		if(!isset($data['range_from'])){$data['range_from'] = '900';}
 		if(!isset($data['range_to'])){$data['range_to'] = '1300';}
-		if(!isset($data['offset'])){$data['offset'] = '25';}
+		if(!isset($data['offset'])){$data['offset'] = '1';}
+		
+		if(!isset($data['show_port1']) and !isset($data['show_port2']) and !isset($data['show_summary'])){
+			$data['show_port1'] = 'yes';
+			$data['show_port2'] = 'yes';
+			$data['show_summary'] = 'yes';
+		}
+		//var_dump($data);
 		
 		$complete_message = '';
         $error_message = '';
@@ -204,15 +214,15 @@ class ReportsController extends AbstractActionController
 			}
 		}
 		
-		if($mode == 'change_port2'){
-			if(isset($data['port_id2']) and $data['port_id2'] != ''){
-				$ResultFuturePlan2 = $FuturePlanTable->getFuturePlan('', $data['port_id2'], $data['index_id'], $data['date_from'], $data['date_to']);
-				$ResultOptionPlan2 = $OptionPlanTable->getOptionPlan('', $data['port_id2'], $data['index_id'], $data['date_from'], $data['date_to']);
-			}else{
-				$ResultFuturePlan2 = array();
-				$ResultOptionPlan2 = array();
-			}
+		
+		if(isset($data['port_id2']) and $data['port_id2'] != ''){
+			$ResultFuturePlan2 = $FuturePlanTable->getFuturePlan('', $data['port_id2'], $data['index_id'], $data['date_from'], $data['date_to']);
+			$ResultOptionPlan2 = $OptionPlanTable->getOptionPlan('', $data['port_id2'], $data['index_id'], $data['date_from'], $data['date_to']);
+		}else{
+			$ResultFuturePlan2 = array();
+			$ResultOptionPlan2 = array();
 		}
+		
 		
 		if($mode == 'add_future_plan'){
 			if(isset($data['future_date']) and !empty($data['future_date'])){
@@ -249,70 +259,166 @@ class ReportsController extends AbstractActionController
 		$ReportSession->ResultOptionPlan2 = $ResultOptionPlan2;
 		
 		$ReportSession->data = $data;
-		if($mode == 'save_value' || $mode == 'save_value2'){
+		if($mode == 'save_value' || $mode == 'changePerPage'){}
+		
+		if($mode == 'save_value2'){
+			$port_id = $data['port_id'];
+			if($port_id == ''){				
+				$ResultFuturePlan = array();
+				$ResultOptionPlan = array();
+				
+				if(isset($data['future_id']) and !empty($data['future_id'])){
+					foreach($data['future_id'] as $id => $future_id){
+						if($future_id == 'new'){
+							$UpdateFuture = array();
+							$UpdateFuture['date'] = $data['future_date'][$id];
+							$UpdateFuture['transaction_id'] = $data['future_transaction_id'][$id];
+							$UpdateFuture['symbol'] = $data['future_symbol'][$id];
+							$UpdateFuture['price'] = $data['future_price'][$id];
+							$UpdateFuture['amount'] = $data['future_amount'][$id];
+							$UpdateFuture['port_id'] = $port_id;
+							$FuturePlanTable->AddFuturePlan($UpdateFuture);
+						}
+					}
+				}
+				
+				if(isset($data['option_id']) and !empty($data['option_id'])){
+					foreach($data['option_id'] as $id => $option_id){
+						if($option_id == 'new'){
+							$UpdateOption = array();
+							$UpdateOption['date'] = $data['option_date'][$id];
+							$UpdateOption['transaction_id'] = $data['option_transaction_id'][$id];
+							$UpdateOption['symbol'] = $data['option_symbol'][$id];
+							$UpdateOption['type'] = $data['option_type'][$id];
+							$UpdateOption['price'] = $data['option_price'][$id];
+							$UpdateOption['premium'] = $data['option_premium'][$id];
+							$UpdateOption['amount'] = $data['option_amount'][$id];
+							$UpdateOption['port_id'] = $port_id;
+							$OptionPlanTable->AddOptionPlan($UpdateOption);
+						}
+					}
+				}
+				$ResultFuturePlan = $FuturePlanTable->getFuturePlan('', $data['port_id'], $data['index_id'], $data['date_from'], $data['date_to']);
+				$ResultOptionPlan = $OptionPlanTable->getOptionPlan('', $data['port_id'], $data['index_id'], $data['date_from'], $data['date_to']);
+			
+				$ReportSession->ResultFuturePlan = $ResultFuturePlan;
+				$ReportSession->ResultOptionPlan = $ResultOptionPlan;
+			
+				return $this->redirect()->toRoute('reports/default', array('controller'=>'reports', 'action' => 'index',)); 
+			}
+		}
+		
+		if($mode != '' and $mode != 'change_value'and $mode != 'change_port'){
+			$port_id = $data['port_id'];
+			if($port_id == ''){
+				$ResultFuturePlan = array();
+				$ResultOptionPlan = array();
+				
+				if(isset($data['future_id']) and !empty($data['future_id'])){
+					foreach($data['future_id'] as $id => $future_id){
+						if($future_id == 'new'){
+							$UpdateFuture = array();
+							$UpdateFuture['date'] = $data['future_date'][$id];
+							$UpdateFuture['transaction_id'] = $data['future_transaction_id'][$id];
+							$UpdateFuture['symbol'] = $data['future_symbol'][$id];
+							$UpdateFuture['price'] = $data['future_price'][$id];
+							$UpdateFuture['amount'] = $data['future_amount'][$id];
+							$UpdateFuture['port_id'] = $port_id;
+							$UpdateFuture['future_id'] = $future_id;
+							$ResultFuturePlan[] = $UpdateFuture;
+						}
+					}
+				}
+				
+				if(isset($data['option_id']) and !empty($data['option_id'])){
+					foreach($data['option_id'] as $id => $option_id){
+						if($option_id == 'new'){
+							$UpdateOption = array();
+							$UpdateOption['date'] = $data['option_date'][$id];
+							$UpdateOption['transaction_id'] = $data['option_transaction_id'][$id];
+							$UpdateOption['symbol'] = $data['option_symbol'][$id];
+							$UpdateOption['type'] = $data['option_type'][$id];
+							$UpdateOption['price'] = $data['option_price'][$id];
+							$UpdateOption['premium'] = $data['option_premium'][$id];
+							$UpdateOption['amount'] = $data['option_amount'][$id];
+							$UpdateOption['port_id'] = $port_id;
+							$UpdateOption['option_id'] = $option_id;
+							$ResultOptionPlan[] = $UpdateOption;
+						}
+					}
+				}
+			
+			}else{
+			
+			if(isset($data['future_id']) and !empty($data['future_id'])){
+				foreach($data['future_id'] as $id => $future_id){
+					if($future_id == 'new'){
+						$UpdateFuture = array();
+						$UpdateFuture['date'] = $data['future_date'][$id];
+						$UpdateFuture['transaction_id'] = $data['future_transaction_id'][$id];
+						$UpdateFuture['symbol'] = $data['future_symbol'][$id];
+						$UpdateFuture['price'] = $data['future_price'][$id];
+						$UpdateFuture['amount'] = $data['future_amount'][$id];
+						$UpdateFuture['port_id'] = $port_id;
+						$FuturePlanTable->AddFuturePlan($UpdateFuture);
+					}else{
+						$UpdateFuture = array();
+						$UpdateFuture['date'] = $data['future_date'][$id];
+						$UpdateFuture['transaction_id'] = $data['future_transaction_id'][$id];
+						$UpdateFuture['symbol'] = $data['future_symbol'][$id];
+						$UpdateFuture['price'] = $data['future_price'][$id];
+						$UpdateFuture['amount'] = $data['future_amount'][$id];
+						$FuturePlanTable->UpdateFuturePlan($UpdateFuture,$ResultFuturePlan[$id]['future_id']);
+					}
+				}
+			}
+			
+			if(isset($data['option_id']) and !empty($data['option_id'])){
+				foreach($data['option_id'] as $id => $option_id){
+					if($option_id == 'new'){
+						$UpdateOption = array();
+						$UpdateOption['date'] = $data['option_date'][$id];
+						$UpdateOption['transaction_id'] = $data['option_transaction_id'][$id];
+						$UpdateOption['symbol'] = $data['option_symbol'][$id];
+						$UpdateOption['type'] = $data['option_type'][$id];
+						$UpdateOption['price'] = $data['option_price'][$id];
+						$UpdateOption['premium'] = $data['option_premium'][$id];
+						$UpdateOption['amount'] = $data['option_amount'][$id];
+						$UpdateOption['port_id'] = $port_id;
+						$OptionPlanTable->AddOptionPlan($UpdateOption);
+					}else{
+						$UpdateOption = array();
+						$UpdateOption['date'] = $data['option_date'][$id];
+						$UpdateOption['transaction_id'] = $data['option_transaction_id'][$id];
+						$UpdateOption['symbol'] = $data['option_symbol'][$id];
+						$UpdateOption['type'] = $data['option_type'][$id];
+						$UpdateOption['price'] = $data['option_price'][$id];
+						$UpdateOption['premium'] = $data['option_premium'][$id];
+						$UpdateOption['amount'] = $data['option_amount'][$id];
+						$OptionPlanTable->UpdateOptionPlan($UpdateOption,$ResultOptionPlan[$id]['option_id']);
+					}
+				}
+			}
+			
+			if(isset($data['remove_future']) and !empty($data['remove_future'])){
+				foreach($data['remove_future'] as $remove_id){
+					$FuturePlanTable->ProcessDeleteFuturePlan($remove_id);
+				}
+			}
+			
+			if(isset($data['remove_option']) and !empty($data['remove_option'])){
+				foreach($data['remove_option'] as $remove_id){
+					$OptionPlanTable->ProcessDeleteOptionPlan($remove_id);
+				}
+			}
+			
 			$ResultFuturePlan = $FuturePlanTable->getFuturePlan('', $data['port_id'], $data['index_id'], $data['date_from'], $data['date_to']);
 			$ResultOptionPlan = $OptionPlanTable->getOptionPlan('', $data['port_id'], $data['index_id'], $data['date_from'], $data['date_to']);
-			
-			if($mode == 'save_value2'){
-				if(isset($data['port_name']) and $data['port_name'] != '' and $data['port_id'] == ''){
-					$AddPort = array();
-					$AddPort['port_name'] = $data['port_name'];
-					$port_id = $PortTable->AddPort($AddPort);
-				}
-				
-				/*$AddIndex = array();
-				$AddIndex['index_name'] = $data['index_name'];
-				$AddIndex['future_contact'] = $data['new_future_contact'];
-				$AddIndex['option_contact'] = $data['new_option_contact'];
-				$index_id = $IndexTable->AddIndex($AddIndex);*/
-				$index_id = '';
-				$data['future_contact'] = $data['new_future_contact'];
-				$data['option_contact'] = $data['new_option_contact'];
-				
-			}else{
-				$port_id = $data['port_id'];
-				$index_id = $data['index_id'];
 			}
+			$ReportSession->ResultFuturePlan = $ResultFuturePlan;
+			$ReportSession->ResultOptionPlan = $ResultOptionPlan;
 			
-			if(isset($data['future_date']) and !empty($data['future_date'])){
-				foreach($data['future_date'] as $id => $future_date){
-					$UpdateFuture = array();
-					$UpdateFuture['date'] = $data['future_date'][$id];
-					$UpdateFuture['symbol'] = $data['future_symbol'][$id];
-					$UpdateFuture['price'] = $data['future_price'][$id];
-					$UpdateFuture['amount'] = $data['future_amount'][$id];
-					if(isset($ResultFuturePlan[$id])){
-						$FuturePlanTable->UpdateFuturePlan($UpdateFuture,$ResultFuturePlan[$id]['future_id']);						
-						unset($ResultFuturePlan[$id]);
-					}else{
-						$UpdateFuture['port_id'] = $port_id;
-						$UpdateFuture['index_id'] = $index_id;
-						$FuturePlanTable->AddFuturePlan($UpdateFuture);
-					}
-				}
-			}
-			
-			if(isset($data['option_date']) and !empty($data['option_date'])){ 
-				foreach($data['option_date'] as $id => $option_date){
-					$UpdateOption = array();
-					$UpdateOption['date'] = $data['option_date'][$id];
-					$UpdateOption['symbol'] = $data['option_symbol'][$id];
-					$UpdateOption['type'] = $data['option_type'][$id];
-					$UpdateOption['price'] = $data['option_price'][$id];
-					$UpdateOption['premium'] = $data['option_premium'][$id];
-					$UpdateOption['amount'] = $data['option_amount'][$id];
-					
-					if(isset($ResultOptionPlan[$id])){
-						$OptionPlanTable->UpdateOptionPlan($UpdateOption,$ResultOptionPlan[$id]['option_id']);						
-						unset($ResultOptionPlan[$id]);
-					}else{
-						$UpdateOption['port_id'] = $port_id;
-						$UpdateOption['index_id'] = $index_id;
-						$OptionPlanTable->AddOptionPlan($UpdateOption);
-					}
-				}
-			}
-			return $this->redirect()->toRoute('reports/default', array('controller'=>'reports', 'action' => 'index',)); 
+			//return $this->redirect()->toRoute('reports/default', array('controller'=>'reports', 'action' => 'index',)); 
 		}		
 		
 		$SumFuture = array();
@@ -327,6 +433,11 @@ class ReportsController extends AbstractActionController
 		$check_current = 0;
 		$current_future_payoff = 0;
 		$current_option_payoff = 0;
+		
+		$current_port1_payoff = 0;
+		$current_port2_payoff = 0;
+		$current_summary_payoff = 0;
+		
 		//echo 'mode => '.$mode.'<br/>';
 		//if($mode == 'calculate_value'){
 			//var_dump($data['range_from']);
@@ -359,6 +470,8 @@ class ReportsController extends AbstractActionController
 								$payoff = $FuturePlanTable->CalculateFuturePlan($check_price, $future_price, $future_amount);
 								if(isset($data['current_price']) and $data['current_price'] == $check_price){
 									$current_future_payoff = $current_future_payoff + $payoff;
+									$current_port1_payoff = $current_port1_payoff + $payoff;
+									$current_summary_payoff = $current_summary_payoff + $payoff;
 									$check_current++;
 								}
 								
@@ -381,6 +494,8 @@ class ReportsController extends AbstractActionController
 								$payoff = $OptionPlanTable->CalculateOptionPlan($check_price, $option_type, $option_price, $option_premium, $option_amount);
 								if(isset($data['current_price']) and $data['current_price'] == $check_price){
 									$current_option_payoff = $current_option_payoff + $payoff;
+									$current_port1_payoff = $current_port1_payoff + $payoff;
+									$current_summary_payoff = $current_summary_payoff + $payoff;
 									$check_current++;
 								}
 								
@@ -402,6 +517,8 @@ class ReportsController extends AbstractActionController
 								$payoff = $FuturePlanTable->CalculateFuturePlan($check_price, $future_price, $future_amount);
 								if(isset($data['current_price']) and $data['current_price'] == $check_price){
 									$current_future_payoff = $current_future_payoff + $payoff;
+									$current_port2_payoff = $current_port2_payoff + $payoff;
+									$current_summary_payoff = $current_summary_payoff + $payoff;
 									$check_current++;
 								}
 								if(!isset($SumFuture2[$check_price])){$SumFuture2[$check_price] = 0;}
@@ -423,6 +540,8 @@ class ReportsController extends AbstractActionController
 								$payoff = $OptionPlanTable->CalculateOptionPlan($check_price, $option_type, $option_price, $option_premium, $option_amount);
 								if(isset($data['current_price']) and $data['current_price'] == $check_price){
 									$current_option_payoff = $current_option_payoff + $payoff;
+									$current_port2_payoff = $current_port2_payoff + $payoff;
+									$current_summary_payoff = $current_summary_payoff + $payoff;
 									$check_current++;
 								}
 								if(!isset($SumOption2[$check_price])){$SumOption2[$check_price] = 0;}
@@ -575,6 +694,9 @@ class ReportsController extends AbstractActionController
 			'option_page_slide2' => $option_page_slide2,
 			'current_future_payoff' => $current_future_payoff,
 			'current_option_payoff' => $current_option_payoff,
+			'current_port1_payoff' => $current_port1_payoff,
+			'current_port2_payoff' => $current_port2_payoff,
+			'current_summary_payoff' => $current_summary_payoff,
         )); 
 		
 	}
@@ -617,7 +739,7 @@ class ReportsController extends AbstractActionController
 		if(!isset($data['option_contact'])){$data['option_contact'] = '';}
 		if(!isset($data['range_from'])){$data['range_from'] = '900';}
 		if(!isset($data['range_to'])){$data['range_to'] = '1300';}
-		if(!isset($data['offset'])){$data['offset'] = '25';}
+		if(!isset($data['offset'])){$data['offset'] = '1';}
 		
 		$complete_message = '';
         $error_message = '';
@@ -923,6 +1045,537 @@ class ReportsController extends AbstractActionController
 		
 	}
 	
+	public function indexOld2Action()
+    {
+		$ReportSession = new Container('ReportSession');
+		$PortTable = $this->getServiceLocator()->get('PortTable');
+		$IndexTable = $this->getServiceLocator()->get('IndexTable');
+		$SymbolTable = $this->getServiceLocator()->get('SymbolTable');
+		$FuturePlanTable = $this->getServiceLocator()->get('FuturePlanTable');
+		$OptionPlanTable = $this->getServiceLocator()->get('OptionPlanTable');
+		
+		//$FuturePlanTable = new Container('FuturePlanTable');
+		//$OptionPlanTable = $this->getServiceLocator()->get('OptionPlanTable');
+		
+		$clear_sec = $this->params()->fromRoute('clear_sec');
+        if($clear_sec != ''){
+            $ReportSession->getManager()->getStorage()->clear('ReportSession');  
+			$ReportSession->data = array('mode'=>'start_plan');
+			return $this->redirect()->toRoute('reports/default', array('controller'=>'reports', 'action' => 'index',)); 
+            exit();
+        }
+		
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $data = $request->getPost();
+        }else{
+			if(isset($ReportSession->data)){
+				$data = $ReportSession->data;
+			}else{
+				$data = array();    
+			}			    
+        }		
+		if(!isset($data['port_id'])){$data['port_id'] = '';}
+		if(!isset($data['port_id2'])){$data['port_id2'] = '';}
+		if(!isset($data['index_id'])){$data['index_id'] = '';}
+		if(!isset($data['date_from'])){$data['date_from'] = '';}
+		if(!isset($data['date_to'])){$data['date_to'] = '';}
+		if(!isset($data['future_contact'])){$data['future_contact'] = '';}
+		if(!isset($data['option_contact'])){$data['option_contact'] = '';}
+		if(!isset($data['current_price'])){$data['current_price'] = '1000';}
+		if(!isset($data['range_from'])){$data['range_from'] = '900';}
+		if(!isset($data['range_to'])){$data['range_to'] = '1300';}
+		if(!isset($data['offset'])){$data['offset'] = '1';}
+		
+		$complete_message = '';
+        $error_message = '';
+		
+		
+		if(isset($ReportSession->complete_message) and $ReportSession->complete_message != ''){
+			$complete_message = $ReportSession->complete_message;
+			$ReportSession->complete_message = '';
+		}
+		
+		if(isset($ReportSession->error_message) and $ReportSession->error_message != ''){
+			$error_message = $ReportSession->error_message;
+			$ReportSession->error_message = '';
+		}
+		
+		//print_r($data); echo "<br><br>";
+		$ResultPort = $PortTable->getPort('');
+		$ResultIndex = $IndexTable->getIndex('');
+		$ResultSymbol = $SymbolTable->getSymbol('', $data['index_id']);
+		
+		if(isset($ReportSession->ResultFuturePlan)){
+			$ResultFuturePlan = $ReportSession->ResultFuturePlan;
+		}else{
+			$ResultFuturePlan = array();
+		}
+		
+		if(isset($ReportSession->ResultOptionPlan)){
+			$ResultOptionPlan = $ReportSession->ResultOptionPlan;
+		}else{
+			$ResultOptionPlan = array();
+		}
+		
+		if(isset($ReportSession->ResultFuturePlan2)){
+			$ResultFuturePlan2 = $ReportSession->ResultFuturePlan2;
+		}else{
+			$ResultFuturePlan2 = array();
+		}
+		
+		if(isset($ReportSession->ResultOptionPlan2)){
+			$ResultOptionPlan2 = $ReportSession->ResultOptionPlan2;
+		}else{
+			$ResultOptionPlan2 = array();
+		}
+		
+		$mode = $this->getRequest()->getPost('mode');
+		//echo 'mode => '.$mode.'<br/>'; 
+		if($mode == 'add_port'){
+			if($data['port_name'] != ''){
+				$AddPort = array();
+				$AddPort['port_name'] = $data['port_name'];
+				$data['port_id'] = $PortTable->AddPort($AddPort);
+				$ReportSession->complete_message = 'Add Port Complete';
+				$data['mode'] == 'start_plan';
+				$ReportSession->data = $data;
+				return $this->redirect()->toRoute('reports/default', array('controller'=>'reports', 'action' => 'index',)); 
+			}
+		}
+		
+		if($mode == 'add_index'){
+			if($data['index_name'] != ''){
+				$AddIndex = array();
+				$AddIndex['index_name'] = $data['index_name'];
+				$AddIndex['future_contact'] = $data['new_future_contact'];
+				$AddIndex['option_contact'] = $data['new_option_contact'];
+				$data['index_id'] = $IndexTable->AddIndex($AddIndex);
+				$data['future_contact'] = $data['new_future_contact'];
+				$data['option_contact'] = $data['new_option_contact'];
+			
+				$ReportSession->complete_message = 'Add Index Complete';
+				$data['mode'] == 'start_plan';
+				$ReportSession->data = $data;
+				return $this->redirect()->toRoute('reports/default', array('controller'=>'reports', 'action' => 'index',)); 
+			}
+		}
+		
+		if((isset($data['mode']) and $data['mode'] == 'start_plan') || $mode == 'change_value'){
+			
+			if(isset($data['port_id']) and $data['port_id'] != ''){
+				$ResultFuturePlan = $FuturePlanTable->getFuturePlan('', $data['port_id'], $data['index_id'], $data['date_from'], $data['date_to']);
+				$ResultOptionPlan = $OptionPlanTable->getOptionPlan('', $data['port_id'], $data['index_id'], $data['date_from'], $data['date_to']);
+			}else{
+				$ResultFuturePlan = array();
+				$ResultFuturePlan = array();
+			}
+			
+			if(isset($data['port_id2']) and $data['port_id2'] != ''){
+				$ResultFuturePlan2 = $FuturePlanTable->getFuturePlan('', $data['port_id2'], $data['index_id'], $data['date_from'], $data['date_to']);
+				$ResultOptionPlan2 = $OptionPlanTable->getOptionPlan('', $data['port_id2'], $data['index_id'], $data['date_from'], $data['date_to']);
+			}else{
+				$ResultFuturePlan2 = array();
+				$ResultOptionPlan2 = array();
+			}			
+
+			$data['mode'] = '';
+		}
+		
+		if($mode == 'change_port'){
+			if(isset($data['port_id']) and $data['port_id'] != ''){
+				$ResultFuturePlan = $FuturePlanTable->getFuturePlan('', $data['port_id'], $data['index_id'], $data['date_from'], $data['date_to']);
+				$ResultOptionPlan = $OptionPlanTable->getOptionPlan('', $data['port_id'], $data['index_id'], $data['date_from'], $data['date_to']);
+			}else{
+				$ResultFuturePlan = array();
+				$ResultFuturePlan = array();
+			}
+		}
+		
+		if($mode == 'change_port2'){
+			if(isset($data['port_id2']) and $data['port_id2'] != ''){
+				$ResultFuturePlan2 = $FuturePlanTable->getFuturePlan('', $data['port_id2'], $data['index_id'], $data['date_from'], $data['date_to']);
+				$ResultOptionPlan2 = $OptionPlanTable->getOptionPlan('', $data['port_id2'], $data['index_id'], $data['date_from'], $data['date_to']);
+			}else{
+				$ResultFuturePlan2 = array();
+				$ResultOptionPlan2 = array();
+			}
+		}
+		
+		if($mode == 'add_future_plan'){
+			if(isset($data['future_date']) and !empty($data['future_date'])){
+				foreach($data['future_date'] as $id => $future_date){
+					$UpdateFuture = array();
+					$UpdateFuture['port_id'] = $data['port_id'];
+					$UpdateFuture['date'] = $data['future_date'][$id];
+					$UpdateFuture['symbol'] = $data['future_symbol'][$id];
+					$UpdateFuture['price'] = $data['future_price'][$id];
+					$UpdateFuture['amount'] = $data['future_amount'][$id];
+					$ResultFuturePlan[] = $UpdateFuture;
+				}
+			}
+		}
+		
+		if($mode == 'add_future_plan_2'){
+			if(isset($data['future_date']) and !empty($data['future_date'])){
+				foreach($data['future_date'] as $id => $future_date){
+					$UpdateFuture = array();
+					$UpdateFuture['port_id'] = $data['port_id'];
+					$UpdateFuture['date'] = $data['future_date'][$id];
+					$UpdateFuture['symbol'] = $data['future_symbol'][$id];
+					$UpdateFuture['price'] = $data['future_price'][$id];
+					$UpdateFuture['amount'] = $data['future_amount'][$id];
+					$ResultFuturePlan2[] = $UpdateFuture;
+				}
+			}
+		}
+		
+		$ReportSession->ResultFuturePlan = $ResultFuturePlan;
+		$ReportSession->ResultOptionPlan = $ResultOptionPlan;
+		
+		$ReportSession->ResultFuturePlan2 = $ResultFuturePlan2;
+		$ReportSession->ResultOptionPlan2 = $ResultOptionPlan2;
+		
+		$ReportSession->data = $data;
+		if($mode == 'save_value' || $mode == 'save_value2'){
+			$ResultFuturePlan = $FuturePlanTable->getFuturePlan('', $data['port_id'], $data['index_id'], $data['date_from'], $data['date_to']);
+			$ResultOptionPlan = $OptionPlanTable->getOptionPlan('', $data['port_id'], $data['index_id'], $data['date_from'], $data['date_to']);
+			
+			if($mode == 'save_value2'){
+				if(isset($data['port_name']) and $data['port_name'] != '' and $data['port_id'] == ''){
+					$AddPort = array();
+					$AddPort['port_name'] = $data['port_name'];
+					$port_id = $PortTable->AddPort($AddPort);
+				}
+				
+				/*$AddIndex = array();
+				$AddIndex['index_name'] = $data['index_name'];
+				$AddIndex['future_contact'] = $data['new_future_contact'];
+				$AddIndex['option_contact'] = $data['new_option_contact'];
+				$index_id = $IndexTable->AddIndex($AddIndex);*/
+				$index_id = '';
+				$data['future_contact'] = $data['new_future_contact'];
+				$data['option_contact'] = $data['new_option_contact'];
+				
+			}else{
+				$port_id = $data['port_id'];
+				$index_id = $data['index_id'];
+			}
+			
+			if(isset($data['future_date']) and !empty($data['future_date'])){
+				foreach($data['future_date'] as $id => $future_date){
+					$UpdateFuture = array();
+					$UpdateFuture['date'] = $data['future_date'][$id];
+					$UpdateFuture['symbol'] = $data['future_symbol'][$id];
+					$UpdateFuture['price'] = $data['future_price'][$id];
+					$UpdateFuture['amount'] = $data['future_amount'][$id];
+					if(isset($ResultFuturePlan[$id])){
+						$FuturePlanTable->UpdateFuturePlan($UpdateFuture,$ResultFuturePlan[$id]['future_id']);						
+						unset($ResultFuturePlan[$id]);
+					}else{
+						$UpdateFuture['port_id'] = $port_id;
+						$UpdateFuture['index_id'] = $index_id;
+						$FuturePlanTable->AddFuturePlan($UpdateFuture);
+					}
+				}
+			}
+			
+			if(isset($data['option_date']) and !empty($data['option_date'])){ 
+				foreach($data['option_date'] as $id => $option_date){
+					$UpdateOption = array();
+					$UpdateOption['date'] = $data['option_date'][$id];
+					$UpdateOption['symbol'] = $data['option_symbol'][$id];
+					$UpdateOption['type'] = $data['option_type'][$id];
+					$UpdateOption['price'] = $data['option_price'][$id];
+					$UpdateOption['premium'] = $data['option_premium'][$id];
+					$UpdateOption['amount'] = $data['option_amount'][$id];
+					
+					if(isset($ResultOptionPlan[$id])){
+						$OptionPlanTable->UpdateOptionPlan($UpdateOption,$ResultOptionPlan[$id]['option_id']);						
+						unset($ResultOptionPlan[$id]);
+					}else{
+						$UpdateOption['port_id'] = $port_id;
+						$UpdateOption['index_id'] = $index_id;
+						$OptionPlanTable->AddOptionPlan($UpdateOption);
+					}
+				}
+			}
+			return $this->redirect()->toRoute('reports/default', array('controller'=>'reports', 'action' => 'index',)); 
+		}		
+		
+		$SumFuture = array();
+		$SumOption = array();
+		$Total = array();
+		
+		$SumFuture2 = array();
+		$SumOption2 = array();
+		$Total2 = array();
+		
+		$TotalSum = array();
+		$check_current = 0;
+		$current_future_payoff = 0;
+		$current_option_payoff = 0;
+		
+		$current_port1_payoff = 0;
+		$current_port2_payoff = 0;
+		
+		//echo 'mode => '.$mode.'<br/>';
+		//if($mode == 'calculate_value'){
+			//var_dump($data['range_from']);
+			//var_dump($data['range_to']);
+			//var_dump($data['offset']);
+			if($data['range_from'] != '' and $data['range_to'] != ''){
+				$time_from = strtotime($data['range_from']);
+				$time_to = strtotime($data['range_to']);
+				$date_from2 = $data['range_from'];
+				$date_to2 = $data['range_to'];
+				if($time_to > $time_from){
+					$data['range_from'] = $date_from2;
+					$data['range_to'] = $date_to2;
+				}else{
+					$data['range_to'] = $date_from2;
+					$data['range_from'] = $date_to2;
+				}
+				if($data['range_to'] > $data['range_from'] and $data['offset'] != 0){
+					$check_price = $data['range_from'];
+					while($check_price <= $data['range_to']){
+						if(!isset($TotalSum[$check_price])){$TotalSum[$check_price] = 0;}
+						
+						if(isset($ResultFuturePlan) and !empty($ResultFuturePlan)){
+							foreach($ResultFuturePlan as $id => $reault_future_plan){
+								$future_date = $reault_future_plan['date'];
+								$future_symbol = $reault_future_plan['symbol'];
+								$future_price = $reault_future_plan['price'];
+								$future_amount = $reault_future_plan['amount'];
+								
+								$payoff = $FuturePlanTable->CalculateFuturePlan($check_price, $future_price, $future_amount);
+								if(isset($data['current_price']) and $data['current_price'] == $check_price){
+									$current_future_payoff = $current_future_payoff + $payoff;
+									$current_port1_payoff = $current_port1_payoff + $payoff;
+									$check_current++;
+								}
+								
+								if(!isset($SumFuture[$check_price])){$SumFuture[$check_price] = 0;}
+								if(!isset($Total[$check_price])){$Total[$check_price] = 0;}
+								$SumFuture[$check_price] = $SumFuture[$check_price] + $payoff;
+								$Total[$check_price] = $Total[$check_price] + $payoff;
+								$TotalSum[$check_price] = $TotalSum[$check_price] + $payoff;
+							}
+						}
+						
+						if(isset($ResultOptionPlan) and !empty($ResultOptionPlan)){ 
+							foreach($ResultOptionPlan as $id => $result_option){ 
+								$option_date = $result_option['date'];
+								$option_symbol = $result_option['symbol'];
+								$option_type = $result_option['type'];
+								$option_price = $result_option['price'];
+								$option_premium = $result_option['premium'];
+								$option_amount = $result_option['amount'];
+								$payoff = $OptionPlanTable->CalculateOptionPlan($check_price, $option_type, $option_price, $option_premium, $option_amount);
+								if(isset($data['current_price']) and $data['current_price'] == $check_price){
+									$current_option_payoff = $current_option_payoff + $payoff;
+									$current_port1_payoff = $current_port1_payoff + $payoff;
+									$check_current++;
+								}
+								
+								if(!isset($SumOption[$check_price])){$SumOption[$check_price] = 0;}
+								if(!isset($Total[$check_price])){$Total[$check_price] = 0;}
+								$SumOption[$check_price] = $SumOption[$check_price] + $payoff;
+								$Total[$check_price] = $Total[$check_price] + $payoff;
+								$TotalSum[$check_price] = $TotalSum[$check_price] + $payoff;
+							}
+						}
+						
+						if(isset($ResultFuturePlan2) and !empty($ResultFuturePlan2)){
+							foreach($ResultFuturePlan2 as $id => $reault_future_plan){
+								$future_date = $reault_future_plan['date'];
+								$future_symbol = $reault_future_plan['symbol'];
+								$future_price = $reault_future_plan['price'];
+								$future_amount = $reault_future_plan['amount'];
+								
+								$payoff = $FuturePlanTable->CalculateFuturePlan($check_price, $future_price, $future_amount);
+								if(isset($data['current_price']) and $data['current_price'] == $check_price){
+									$current_future_payoff = $current_future_payoff + $payoff;
+									$current_port2_payoff = $current_port2_payoff + $payoff;
+									$check_current++;
+								}
+								if(!isset($SumFuture2[$check_price])){$SumFuture2[$check_price] = 0;}
+								if(!isset($Total2[$check_price])){$Total2[$check_price] = 0;}
+								$SumFuture2[$check_price] = $SumFuture2[$check_price] + $payoff;
+								$Total2[$check_price] = $Total2[$check_price] + $payoff;
+								$TotalSum[$check_price] = $TotalSum[$check_price] + $payoff;
+							}
+						}
+						
+						if(isset($ResultOptionPlan2) and !empty($ResultOptionPlan2)){ 
+							foreach($ResultOptionPlan2 as $id => $result_option){ 
+								$option_date = $result_option['date'];
+								$option_symbol = $result_option['symbol'];
+								$option_type = $result_option['type'];
+								$option_price = $result_option['price'];
+								$option_premium = $result_option['premium'];
+								$option_amount = $result_option['amount'];
+								$payoff = $OptionPlanTable->CalculateOptionPlan($check_price, $option_type, $option_price, $option_premium, $option_amount);
+								if(isset($data['current_price']) and $data['current_price'] == $check_price){
+									$current_option_payoff = $current_option_payoff + $payoff;
+									$current_port2_payoff = $current_port2_payoff + $payoff;
+									$check_current++;
+								}
+								if(!isset($SumOption2[$check_price])){$SumOption2[$check_price] = 0;}
+								if(!isset($Total2[$check_price])){$Total2[$check_price] = 0;}
+								$SumOption2[$check_price] = $SumOption2[$check_price] + $payoff;
+								$Total2[$check_price] = $Total2[$check_price] + $payoff;
+								$TotalSum[$check_price] = $TotalSum[$check_price] + $payoff;
+							}
+						}
+						
+						//echo 'SumFuture => '; var_dump($SumFuture); echo '<br/><br/>';
+						//echo 'SumOption => '; var_dump($SumOption); echo '<br/><br/>';
+						$check_price = $check_price + $data['offset'];
+						
+					}
+				}
+			}
+		//}
+		
+		if($data['current_price'] != '' and $check_current == 0){
+			if(isset($ResultFuturePlan) and !empty($ResultFuturePlan)){
+				foreach($ResultFuturePlan as $id => $reault_future_plan){
+					$payoff = $FuturePlanTable->CalculateFuturePlan($data['current_price'], $future_price, $future_amount);
+					$current_future_payoff = $current_future_payoff + $payoff;
+				}
+			}
+						
+			if(isset($ResultOptionPlan) and !empty($ResultOptionPlan)){ 
+				foreach($ResultOptionPlan as $id => $result_option){ 
+					$payoff = $OptionPlanTable->CalculateOptionPlan($data['current_price'], $option_type, $option_price, $option_premium, $option_amount);
+					$current_option_payoff = $current_option_payoff + $payoff;
+				}
+			}
+			
+			if(isset($ResultFuturePlan2) and !empty($ResultFuturePlan2)){
+				foreach($ResultFuturePlan2 as $id => $reault_future_plan){
+					$payoff = $FuturePlanTable->CalculateFuturePlan($data['current_price'], $future_price, $future_amount);
+					$current_future_payoff = $current_future_payoff + $payoff;
+				}
+			}
+						
+			if(isset($ResultOptionPlan2) and !empty($ResultOptionPlan2)){ 
+				foreach($ResultOptionPlan2 as $id => $result_option){ 
+					$payoff = $OptionPlanTable->CalculateOptionPlan($data['current_price'], $option_type, $option_price, $option_premium, $option_amount);
+					$current_option_payoff = $current_option_payoff + $payoff;
+				}
+			}
+		}
+		
+		if(!isset($data['page1'])){$data['page1'] = 1;}
+		if(!isset($data['per_page1'])){
+			if(isset($ReportSession->per_page1)){
+				$data['per_page1'] = $ReportSession->per_page1;
+			}else{
+				$data['per_page1'] = 20;
+			}
+		}
+		if($data['per_page1'] == ''){$data['per_page1'] = 20;}
+		
+		if(!isset($data['page2'])){$data['page2'] = 1;}
+		if(!isset($data['per_page2'])){
+			if(isset($ReportSession->per_page1)){
+				$data['per_page2'] = $ReportSession->per_page1;
+			}else{
+				$data['per_page2'] = 20;
+			}
+		}
+		if($data['per_page2'] == ''){$data['per_page2'] = 20;}
+		
+		if(!isset($data['page3'])){$data['page3'] = 1;}
+		if(!isset($data['per_page3'])){
+			if(isset($ReportSession->per_page1)){
+				$data['per_page3'] = $ReportSession->per_page1;
+			}else{
+				$data['per_page3'] = 20;
+			}
+		}
+		if($data['per_page3'] == ''){$data['per_page3'] = 20;}
+		
+		if(!isset($data['page4'])){$data['page4'] = 1;}
+		if(!isset($data['per_page4'])){
+			if(isset($ReportSession->per_page1)){
+				$data['per_page4'] = $ReportSession->per_page1;
+			}else{
+				$data['per_page4'] = 20;
+			}
+		}
+		if($data['per_page4'] == ''){$data['per_page4'] = 20;}
+		
+		if($mode == 'Changepage'){
+			$page_name = $data['change_page_name'];
+			$page_value = $data['change_page_value'];
+			$data[$page_name] = $page_value;
+		}
+	   
+		$ReportSession->per_page1 = $data['per_page1'];
+        $paginator_future1 = new Paginator(new ArrayAdapter($ResultFuturePlan));
+        $paginator_future1->setCurrentPageNumber($data['page1'])
+        ->setItemCountPerPage($data['per_page1'])
+        ;
+		$future_page_slide = $this->GeneratePaginationSlide($paginator_future1, $data['page1'], $data['per_page1'], 'page1');
+		
+		$ReportSession->per_page2 = $data['per_page2'];
+        $paginator_future2 = new Paginator(new ArrayAdapter($ResultFuturePlan2));
+        $paginator_future2->setCurrentPageNumber($data['page2'])
+        ->setItemCountPerPage($data['per_page2'])
+        ;
+		$future_page_slide2 = $this->GeneratePaginationSlide($paginator_future2, $data['page2'], $data['per_page2'], 'page2');
+		
+		$ReportSession->per_page3 = $data['per_page3'];
+        $paginator_option1 = new Paginator(new ArrayAdapter($ResultOptionPlan));
+        $paginator_option1->setCurrentPageNumber($data['page3'])
+        ->setItemCountPerPage($data['per_page3'])
+        ;
+		$option_page_slide = $this->GeneratePaginationSlide($paginator_option1, $data['page3'], $data['per_page3'], 'page3');
+		
+		$ReportSession->per_page4 = $data['per_page4'];
+        $paginator_option2 = new Paginator(new ArrayAdapter($ResultOptionPlan2));
+        $paginator_option2->setCurrentPageNumber($data['page4'])
+        ->setItemCountPerPage($data['per_page4'])
+        ;
+		$option_page_slide2 = $this->GeneratePaginationSlide($paginator_option2, $data['page4'], $data['per_page4'], 'page4');
+		
+        return new ViewModel(array(            
+            'baseUrl' => $this->getBaseUrl(),
+            'data' => $data,
+            'ResultPort' => $ResultPort,
+            'ResultIndex' => $ResultIndex,
+            'ResultFuturePlan' => $ResultFuturePlan,
+            'ResultFuturePlan2' => $ResultFuturePlan2,
+            'ResultOptionPlan' => $ResultOptionPlan,
+            'ResultOptionPlan2' => $ResultOptionPlan2,
+            'complete_message' => $complete_message,
+            'error_message' => $error_message,
+            'paginator_future1' => $paginator_future1,
+            'paginator_future2' => $paginator_future2,
+            'paginator_option1' => $paginator_option1,
+            'paginator_option2' => $paginator_option2,
+			'lang' => $this->Language,
+			'SumFuture' => $SumFuture,
+			'SumOption' => $SumOption,
+			'SumFuture2' => $SumFuture2,
+			'SumOption2' => $SumOption2,
+			'Total' => $Total,
+			'Total2' => $Total2,
+			'TotalSum' => $TotalSum,
+			'future_page_slide' => $future_page_slide,
+			'future_page_slide2' => $future_page_slide2,
+			'option_page_slide' => $option_page_slide,
+			'option_page_slide2' => $option_page_slide2,
+			'current_future_payoff' => $current_future_payoff,
+			'current_option_payoff' => $current_option_payoff,
+			'current_port1_payoff' => $current_port1_payoff,
+			'current_port2_payoff' => $current_port2_payoff,
+        )); 
+		
+	}
 	
 	private function GeneratePaginationSlide($paginator, $page, $per_page, $page_name)
 	{
@@ -1023,7 +1676,7 @@ class ReportsController extends AbstractActionController
 		if(!isset($data['option_contact'])){$data['option_contact'] = '';}
 		if(!isset($data['range_from'])){$data['range_from'] = '900';}
 		if(!isset($data['range_to'])){$data['range_to'] = '1300';}
-		if(!isset($data['offset'])){$data['offset'] = '25';}
+		if(!isset($data['offset'])){$data['offset'] = '1';}
 		
 		$complete_message = '';
         $error_message = '';
@@ -1114,6 +1767,7 @@ class ReportsController extends AbstractActionController
 						$detailss['result'] = '';
 						
 						if(!isset($detailss['transaction']) || $detailss['transaction'] == ''){
+							$detailss['transaction'] = '';
 						}else{
 							$ResultDup = $FuturePlanTable->CheckDuplicate('', $data['import_future_port_id'], $detailss['transaction']);
 							if($ResultDup){
@@ -1228,6 +1882,7 @@ class ReportsController extends AbstractActionController
 						$detailss['result'] = '';
 						
 						if(!isset($detailss['transaction']) || $detailss['transaction'] == ''){
+							$detailss['transaction'] = '';
 						}else{
 							$ResultDup = $OptionPlanTable->CheckDuplicate('', $data['import_future_port_id'], $detailss['transaction']);
 							if($ResultDup){
@@ -1567,7 +2222,7 @@ class ReportsController extends AbstractActionController
 		if(!isset($data['option_contact'])){$data['option_contact'] = '';}
 		if(!isset($data['range_from'])){$data['range_from'] = '900';}
 		if(!isset($data['range_to'])){$data['range_to'] = '1300';}
-		if(!isset($data['offset'])){$data['offset'] = '25';}
+		if(!isset($data['offset'])){$data['offset'] = '1';}
 		
 		$complete_message = '';
         $error_message = '';

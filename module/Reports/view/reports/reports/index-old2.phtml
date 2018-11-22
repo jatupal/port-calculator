@@ -31,69 +31,54 @@ $check_price = $data['range_from'];
 
 $graph_array .= '[';
 $graph_array .= '"Value"';
-if(isset($data['show_port1']) and $data['show_port1'] == 'yes'){
-	$port_name = 'Simulate';
-	if(!empty($Total)){		
-		foreach($ResultPort as $result_port){ 
-			if($data['port_id'] == $result_port['port_id']){
-				$port_name = $result_port['port_name'];
-				break;
-			}
+if(!empty($Total) and $data['port_id'] != ''){
+	$port_name = 'Portfolio 1';
+	foreach($ResultPort as $result_port){ 
+		if($data['port_id'] == $result_port['port_id']){
+			$port_name = $result_port['port_name'];
+			break;
 		}
-	}
+	} 
 	$graph_array .= ',"'.$port_name.'"';
 }
 
-if(isset($data['show_port2']) and $data['show_port2'] == 'yes'){
-	$port_name2 = 'Portfolio 2';
-	if(!empty($Total2)){
-		foreach($ResultPort as $result_port){ 
-			if($data['port_id2'] == $result_port['port_id']){
-				$port_name2 = $result_port['port_name'];
-				break;
-			}
+if(!empty($Total2) and $data['port_id2'] != ''){ 
+	$port_name = 'Portfolio 2';
+	foreach($ResultPort as $result_port){ 
+		if($data['port_id2'] == $result_port['port_id']){
+			$port_name = $result_port['port_name'];
+			break;
 		}
-	}
-	$graph_array .= ',"'.$port_name2.'"';
+	} 
+	$graph_array .= ',"'.$port_name.'"';
 }
 
-if(isset($data['show_summary']) and $data['show_summary'] == 'yes'){
+if(!empty($TotalSum)){
 	$graph_array .= ',"Summary"';
 }
 
 $graph_array .= '],';
 
-$graph_array2 = '';
+
 while($check_price <= $data['range_to']){ 
 	$graph_array .= '[';
 	$graph_array .= $check_price;
-	if(isset($data['show_port1']) and $data['show_port1'] == 'yes'){
-		if(!empty($Total) and isset($Total[$check_price])){ 
-			$graph_array .= ','.$Total[$check_price];
-		}else{
-			$graph_array .= ',0';
-		}
+
+	if(!empty($Total) and $data['port_id'] != ''){		
+		$graph_array .= ','.$Total[$check_price];
 	}
-	if(isset($data['show_port2']) and $data['show_port2'] == 'yes'){
-		if(!empty($Total2) and isset($Total2[$check_price])){ 
-			$graph_array .= ','.$Total2[$check_price];
-		}else{
-			$graph_array .= ',0';
-		}
+	if(!empty($Total2) and $data['port_id2'] != ''){ 
+		$graph_array .= ','.$Total2[$check_price];
 	}
-	if(isset($data['show_summary']) and $data['show_summary'] == 'yes'){
-		if(!empty($TotalSum)){ 
-			$graph_array .= ','.$TotalSum[$check_price];
-		}else{
-			$graph_array .= ',0';
-		}
+	if(!empty($TotalSum)){ 
+		$graph_array .= ','.$TotalSum[$check_price];
 	}
 	$graph_array .= '],';
 	
 	$check_price = $check_price + $data['offset'];
 } 
-//var_dump($graph_array);
 ?>
+
 <script type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
@@ -110,12 +95,12 @@ while($check_price <= $data['range_to']){
         };
 
         var chart = new google.visualization.AreaChart(document.getElementById('curve_chart'));
-		
+
         chart.draw(data, options);
       }
 </script>
 
-
+	
 	
 <script type="text/javascript">
 function change_value()
@@ -245,8 +230,8 @@ function save_value()
 function save_value2()
 {	
 	with(window.document.MyForm){
-		if(port_id.value == ''){
-			alert('Please Select Port');
+		if(port_id.value == '' && port_name.value == ''){
+			alert('Please Input Port');
 			return false;
 		}
 		
@@ -257,24 +242,6 @@ function save_value2()
 		submit();
 		
 	}
-}
-
-function delete_future1(id1)
-{
-	var add_hidden = document.createElement("input");
-	add_hidden.type = "hidden";
-	add_hidden.name = "remove_future[]";
-	add_hidden.value = id1;
-	document.getElementById('remove_future1').appendChild(add_hidden);
-}
-
-function delete_option1(id1)
-{
-	var add_hidden = document.createElement("input");
-	add_hidden.type = "hidden";
-	add_hidden.name = "remove_option[]";
-	add_hidden.value = id1;
-	document.getElementById('remove_option1').appendChild(add_hidden);
 }
 
 </script>
@@ -395,506 +362,391 @@ function delete_option1(id1)
 			<input type="hidden" name="per_page3" value="<?php echo $data['per_page3']; ?>">
 			<input type="hidden" name="page4" value="<?php echo $data['page4']; ?>">
 			<input type="hidden" name="per_page4" value="<?php echo $data['per_page4']; ?>">
-			
-			<div id="modal_save_new_value" class="modal fade" data-backdrop="static" >
-				<div class="modal-dialog modal-sm">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h5 class="modal-title">Please Select Port</h5>
-						</div>							
-						<div class="modal-body">
-							<div class="row">	
-								<div class="col-md-12">
-									<div class="form-group">
-										<label>Port ID</label>
-										<select name="port_id" class="form-control" >
-											<option value="" <?php if($data['port_id'] == ''){ echo "selected='selected'"; } ?>>Select Port</option>
-											<?php if(!empty($ResultPort)){foreach($ResultPort as $result_port){ ?>
-												<option value="<?php echo $result_port['port_id']; ?>" <?php if($data['port_id'] == $result_port['port_id']){ echo "selected='selected'"; } ?>><?php echo $result_port['port_name']; ?></option>
-											<?php }} ?>
-										</select>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-link" data-dismiss="modal"><?php echo $this->translate("Close","default",$lang); ?></button>
-							<button type="button" class="btn btn-primary" onClick="javascript:save_value2();" ><?php echo $this->translate("Add Index","default",$lang); ?></button>
-						</div>
-					</div>
-				</div>
-			</div>
-							
 			<div class="row">
-				<div class="col-md-7">
-					<div class="panel panel-flat">
-						<div class="row" id="Portfolio1">
-							<div class="col-md-12">					
-								<table >
-								<tr>
-								<th colspan="2">Portfolio 1 <a href="#" data-toggle="modal" data-target="#modal_add_port"><i class="icon-plus-circle2"></i></a></th>
-								</tr>					
-								<tr>
-								<td>
-								<select name="port_id" class="form-control" >
-									<option value="" <?php if($data['port_id'] == ''){ echo "selected='selected'"; } ?>>No Port</option>
-									<?php if(!empty($ResultPort)){foreach($ResultPort as $result_port){ ?>
-										<option value="<?php echo $result_port['port_id']; ?>" <?php if($data['port_id'] == $result_port['port_id']){ echo "selected='selected'"; } ?>><?php echo $result_port['port_name']; ?></option>
-									<?php }} ?>
-								</select>
-								</td>
-								<td>
-								<button type="button" onClick="javascript:change_port();"><?php echo $this->translate("Load","default",$lang); ?></button>&nbsp;&nbsp;
-								<?php 
-								if($data['port_id'] == ''){ ?>
-								<button type="button" data-toggle="modal" data-target="#modal_save_new_value" ><?php echo $this->translate("Save","default",$lang); ?></button>
-								<?php }else{ ?>
-								<button type="button" onClick="javascript:save_value();"><?php echo $this->translate("Save","default",$lang); ?></button>
-								<?php } ?>
-								
-								</td>
-								</tr>
-								</table>
-							</div>
-						</div>
-						
-						<div class="row">
-							<div class="col-md-12">
-								<div class="panel panel-flat">
-									<div class="panel-heading">
-										<h6 class="panel-title"><?php echo $this->translate("Future", "default", $lang); ?></h6>
-										
-										<div class="heading-elements">
-											
-										</div>
-									</div>
-									<div class="panel-body">
-									<div class="row">
-									<div class="col-md-8">
-									<?php echo $future_page_slide; ?>
-									</div>
-									<div class="col-md-4 text-right">
-									<?php echo $this->translate("Show", "default", $lang); ?>&nbsp;:&nbsp;&nbsp;<select name='per_page1' onchange="javascript:changePerPage(this.value);" >
-									   <option value='20' <?php if(!isset($data['per_page']) || $data['per_page'] == '20'){ echo "selected='selected'"; } ?> >20</option>
-									   <option value='50' <?php if(isset($data['per_page']) and $data['per_page'] == '50'){ echo "selected='selected'"; } ?> >50</option>
-									   <option value='100' <?php if(isset($data['per_page']) and $data['per_page'] == '100'){ echo "selected='selected'"; } ?> >100</option>
-									   <option value='200' <?php if(isset($data['per_page']) and $data['per_page'] == '200'){ echo "selected='selected'"; } ?> >200</option>
-									</select>&nbsp;&nbsp;<?php echo $this->translate("Items/Pages", "default", $lang); ?>
-									</div>
-									</div>
-									<div class="table-responsive">
-									<div id="remove_future1" style="display:none;"></div>
-									<table width="100%" cellpadding="5" cellspacing="5" border="1" class="future-table">
-										<thead>
-										<tr>
-										<th style="padding-right:10px">Date</th>
-										<th style="padding-right:10px">Transaction</th>
-										<th style="padding-right:10px">Symbol</th>
-										<th style="padding-right:10px">Strike Price</th>
-										<th style="padding-right:10px">Amount</th>
-										<th></th>
-										</tr>
-										</thead>
-										
-										<tbody id="FutureTableBody">
-										<?php if(isset($ResultFuturePlan) and !empty($ResultFuturePlan)){
-											$i = 1;
-											foreach($paginator_future1 as $id => $reault_future_plan){
-												$future_date = $reault_future_plan['date'];
-												$future_transaction_id = $reault_future_plan['transaction_id'];
-												$future_symbol = $reault_future_plan['symbol'];
-												$future_price = $reault_future_plan['price'];
-												$future_amount = $reault_future_plan['amount'];
-												?>
-												<tr>
-												<td>
-												<input name="future_id[]" type="hidden" value="<?php echo $reault_future_plan["future_id"]; ?>">
-												<input type="text" name="future_date[]" class="date_format" autocomplete="off" value="<?php echo $future_date; ?>"size="10"></td>
-												<td><input type="text" name="future_transaction_id[]" value="<?php echo $future_transaction_id; ?>" size="10"></td>
-												<td><input type="text" name="future_symbol[]" value="<?php echo $future_symbol; ?>" size="10"></td>
-												<td><input type="text" name="future_price[]"  value="<?php echo $future_price; ?>" size="10"></td>
-												<td><input type="text" name="future_amount[]"  value="<?php echo $future_amount; ?>" size="10"></td>
-												<td class="future-table__cell"><button type="button" class="future-table__del" onclick="javascript:delete_future1(<?php echo $reault_future_plan["future_id"]; ?>)" >x</button></td>
-												</tr>
-											<?php $i++; 
-											} ?>
-										<?php }else{ ?>
-										<tr>
-											<td>
-											<input name="future_id[]" type="hidden" value="new">
-											<input type="text" name="future_date[]" class="date_format" autocomplete="off" value=""size="10"></td>
-											<td><input type="text" name="future_transaction_id[]" value=""size="10"></td>
-											<td><input type="text" name="future_symbol[]" value=""size="10"></td>
-											<td><input type="text" name="future_price[]"  value=""size="10"></td>
-											<td><input type="text" name="future_amount[]"  value=""size="10"></td>
-											<td class="future-table__cell"><button type="button" class="future-table__del">x</button></td>
-										</tr>
-										<?php } ?>
-										</tbody>
-									</table>
-									<div class="future-table__add-row">
-										<span class="future-table__add"><i class="icon-plus-circle2" ></i> Add</span>
-									</div>
-									</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<div class="panel panel-flat">
-									<div class="panel-heading">
-										<h6 class="panel-title"><?php echo $this->translate("Option", "default", $lang); ?></h6>
-										<div class="heading-elements">
-											
-										</div>
-									</div>
-									<div class="panel-body">
-									<div class="row">
-									<div class="col-md-8">
-									<?php echo $option_page_slide; ?>
-									</div>
-									<div class="col-md-4 text-right">
-									<?php echo $this->translate("Show", "default", $lang); ?>&nbsp;:&nbsp;&nbsp;<select name='per_page2' onchange="javascript:changePerPage2(this.value);" >
-									   <option value='20' <?php if(!isset($data['per_page2']) || $data['per_page2'] == '20'){ echo "selected='selected'"; } ?> >20</option>
-									   <option value='50' <?php if(isset($data['per_page2']) and $data['per_page2'] == '50'){ echo "selected='selected'"; } ?> >50</option>
-									   <option value='100' <?php if(isset($data['per_page2']) and $data['per_page2'] == '100'){ echo "selected='selected'"; } ?> >100</option>
-									   <option value='200' <?php if(isset($data['per_page2']) and $data['per_page2'] == '200'){ echo "selected='selected'"; } ?> >200</option>
-									</select>&nbsp;&nbsp;<?php echo $this->translate("Items/Pages", "default", $lang); ?>
-									</div>
-									</div>
-									<div class="table-responsive">
-									<div id="remove_option1" style="display:none;"></div>
-									<table width="100%" cellpadding="5" cellspacing="5" border="1" class="future-table">
-										<thead>
-										<tr>
-										<th style="padding-right:10px">Date</th>
-										<th style="padding-right:10px">Transaction</th>
-										<th style="padding-right:10px">Symbol</th>
-										<th style="padding-right:10px">Type</th>
-										<th style="padding-right:10px">Strike Price</th>
-										<th style="padding-right:10px">Premium</th>
-										<th style="padding-right:10px">Amount</th>
-										</tr>
-										</thead>
-										
-										<tbody id="OptionTableBody">
-									
-										<?php if(isset($ResultOptionPlan) and !empty($ResultOptionPlan)){ 
-										foreach($paginator_option1 as $id => $result_option){ 
-											$option_date = $result_option['date'];
-											$option_transaction_id = $result_option['transaction_id'];
-											$option_symbol = $result_option['symbol'];
-											$option_type = $result_option['type'];
-											$option_price = $result_option['price'];
-											$option_premium = $result_option['premium'];
-											$option_amount = $result_option['amount'];
-											?>
-											<tr>
-											<td>
-											<input name="option_id[]" type="hidden" value="<?php echo $result_option["option_id"]; ?>" >
-											<input type="text" name="option_date[]" class="date_format" autocomplete="off" value="<?php echo $option_date; ?>" size="10"></td>
-											<td><input type="text" name="option_transaction_id[]" value="<?php echo $option_transaction_id; ?>"size="10"></td>
-											<td><input type="text" name="option_symbol[]" value="<?php echo $option_symbol; ?>"size="10"></td>
-											<td>
-												<select name="option_type[]" required>
-												<option value="" <?php if($option_type == ''){echo 'selected="selected"';} ?>>Select</option>
-												<option value="Put" <?php if($option_type == 'Put'){echo 'selected="selected"';} ?>>Put</option>
-												<option value="Call" <?php if($option_type == 'Call'){echo 'selected="selected"';} ?>>Call</option>
-												</select>
-											</td>
-											<td><input type="text" name="option_price[]" required value="<?php echo $option_price; ?>"size="10"></td>
-											<td><input type="text" name="option_premium[]" required value="<?php echo $option_premium; ?>" size="10"></td>
-											<td><input type="text" name="option_amount[]" required value="<?php echo $option_amount; ?>" size="10"></td>
-											<td class="future-table__cell"><button type="button" class="future-table__del" onclick="javascript:delete_option1(<?php echo $result_option["option_id"]; ?>)" >x</button></td>
-											</tr>
-										<?php } ?>
-										<?php }else{ ?>
-										<tr>
-											<td>
-											<input name="option_id[]" type="hidden" value="new">
-											<input type="text" name="option_date[]" class="date_format" autocomplete="off" value=""size="10"></td>
-											<td><input type="text" name="option_transaction_id[]" value=""size="10"></td>
-											<td><input type="text" name="option_symbol[]" value=""size="10"></td>
-											<td>
-												<select name="option_type[]" >
-												<option value="Put">Put</option>
-												<option value="Call">Call</option>
-												</select>
-											</td>
-											<td><input type="text" name="option_price[]"  value=""size="10"></td>
-											<td><input type="text" name="option_premium[]"  value="" size="10"></td>
-											<td><input type="text" name="option_amount[]"  value="" size="10"></td>
-											<td class="option-table__cell"><button type="button" class="option-table__del">x</button></td>
-										</tr>
-										<?php } ?>
-										</tbody>
-							
-									</table>
-									<div class="option-table__add-row">
-										<span class="option-table__add"><i class="icon-plus-circle2" ></i> Add</span>
-									</div>
-									</div>							
-							
-									</div>
-								</div>
-							</div>
-						</div>	
-						
-					</div>	
-				</div>
-				<div class="col-md-5">
-					
-					<div class="row">						
-						
-						<div class="col-md-3">
-							<div class="form-group">
-							<label>Current Price</label>
-							<input type="number" step="0.01" style="max-width:8em;" name="current_price" value="<?php echo $data['current_price']; ?>"size="10">
-							</div>
-						</div>
-						
-						<?php if(isset($data['show_port1']) and $data['show_port1'] == 'yes'){ 
-							$port_name = 'Simulate';
-							foreach($ResultPort as $result_port){ 
-								if($data['port_id'] == $result_port['port_id']){
-									$port_name = $result_port['port_name'];
-									break;
-								}
-							}
-						?>
-						<div class="col-md-3">
-							<div class="form-group">
-							<label><?php echo $port_name; ?></label><br/>
-							<input type="text" readonly="readonly" style="max-width:8em;" name="current_port1_payoff" value="<?php echo $current_port1_payoff; ?>"size="10">
-							</div>
-						</div>
-						<?php } ?>
-				
-						
-						<?php if(isset($data['show_port2']) and $data['show_port2'] == 'yes'){ 
-							$port_name2 = 'Portfolio 2';
-							foreach($ResultPort as $result_port){ 
-								if($data['port_id2'] == $result_port['port_id']){
-									$port_name2 = $result_port['port_name'];
-									break;
-								}
-							}
-						?>
-						<div class="col-md-3">
-							<div class="form-group">
-							<label><?php echo $port_name2; ?></label><br/>
-							<input type="text" readonly="readonly" style="max-width:8em;" name="current_port2_payoff" value="<?php echo $current_port2_payoff; ?>"size="10">
-							</div>
-						</div>
-						<?php } ?>
-						
-						<?php if(isset($data['show_summary']) and $data['show_summary'] == 'yes'){ ?>
-						<div class="col-md-3">
-							<div class="form-group">
-							<label>Summary</label><br/>
-							<input type="text" readonly="readonly" style="max-width:8em;" name="current_summary_payoff" value="<?php echo $current_summary_payoff; ?>"size="10">
-							</div>
-						</div>
-						<?php } ?>
-						
-						
-						<?php /*if(isset($Current)){ ?> <?php } ?>
+				<div class="col-md-3">
+					<div class="row">
 						<div class="col-md-12">
-						<table width="100%">
-							<tr>							
-							<td width="25%">Current Price</td>
-							<?php if(isset($data['show_port1']) and $data['show_port1'] == 'yes'){ 
-							$port_name = 'Simulate';
-							foreach($ResultPort as $result_port){ 
-								if($data['port_id'] == $result_port['port_id']){
-									$port_name = $result_port['port_name'];
-									break;
-								}
-							}
-							?>
-							<td width="25%"><?php echo $port_name; ?></td>
-							<?php } ?>
-							
-							<?php if(isset($data['show_port2']) and $data['show_port2'] == 'yes'){ 
-							$port_name2 = 'Portfolio 2';
-							foreach($ResultPort as $result_port){ 
-								if($data['port_id2'] == $result_port['port_id']){
-									$port_name2 = $result_port['port_name'];
-									break;
-								}
-							}
-							?>
-							<td width="25%"><?php echo $port_name2; ?></td>
-							<?php } ?>
-							
-							<?php if(isset($data['show_summary']) and $data['show_summary'] == 'yes'){ ?>
-							<td width="25%">Summary</td>
-							<?php } ?>
-							</tr>
-							
-							<tr>							
-							<td width="25%"><input type="number" step="0.01" style="max-width:8em;" name="current_price" value="<?php echo $data['current_price']; ?>"size="10"></td>
-							<?php if(isset($data['show_port1']) and $data['show_port1'] == 'yes'){ ?>
-							<td><?php echo $current_port1_payoff; ?></td>
-							<?php } ?>
-							
-							<?php if(isset($data['show_port2']) and $data['show_port2'] == 'yes'){ ?>
-							<td><?php echo $current_port2_payoff; ?></td>
-							<?php } ?>
-							
-							<?php if(isset($data['show_summary']) and $data['show_summary'] == 'yes'){ ?>
-							<td><?php echo $current_summary_payoff; ?></td>
-							<?php } ?>
-							</tr>
-							
+						Current Price <input type="number" step="0.01" name="current_price" value="<?php echo $data['current_price']; ?>"size="10">
+						</div>
+						
+						<?php if($data['current_price'] != '' ){ ?>
+						<div class="col-md-12">
+						<br/>
+						<div class="table-responsive ">
+						<table class="table" border="1">						
+						<tr>
+						<th></th>
+						<th>Payoff</th>
+						</tr>
+						<tr>
+						<td>Port 1</td>							
+						<td><?php echo $current_port1_payoff; ?></td>
+						</tr>
+						<tr>
+						<td>Port 2</td>							
+						<td><?php echo $current_port2_payoff; ?></td>
+						</tr>
 						</table>
 						</div>
-						<?php }*/ ?>
+						</div>
+						<?php } ?>
 					</div>
-					
-					
-					
-						
-						
+				</div>
+				<div class="col-md-9">
 					<div class="row">
 						
 						<div class="col-md-12">
-							<table width="100%">
-							<tr>							
-							<td>Range From</td>
-							<td>To </td>
-							<td>Offset</td>
-							<td></td>
-							</tr>
+						Range From <input type="number" step="0.01" name="range_from" value="<?php echo $data['range_from']; ?>"size="10">
+						&nbsp;To <input type="number" step="0.01" name="range_to" value="<?php echo $data['range_to']; ?>"size="10">
+						&nbsp;Offset <input type="number" step="0.01" name="offset" value="<?php echo $data['offset']; ?>"size="10">
+						<button type="button" onClick="javascript:calculate_value();"><?php echo $this->translate("Calculate","default",$lang); ?></button>
+						
+						&nbsp;&nbsp;<button type="button" class="btn btn-default" id="show_graph_summary"><i class="icon-graph"></i></button>
+						&nbsp;&nbsp;<button type="button" class="btn btn-default" id="show_table_summary" ><i class="icon-table2"></i></button>
+						
+						<script type="text/javascript">
+							$(document).ready(function () {
+								$('#show_graph_summary').click(function(e){
+									var curve_chart = document.getElementById("curve_chart");								
+									var table_chart = document.getElementById("table_chart");
+									
+									curve_chart.style.display = "block";									
+									table_chart.style.display = "none";
+								});
+								
+								$('#show_table_summary').click(function(e){
+									var curve_chart = document.getElementById("curve_chart");								
+									var table_chart = document.getElementById("table_chart");
+									curve_chart.style.display = "none";									
+									table_chart.style.display = "block";
+								});
+							});
 							
-							<tr>
-							<td><input type="number" step="0.01" name="range_from" value="<?php echo $data['range_from']; ?>" style="width: 7em"></td>
-							<td><input type="number" step="0.01" name="range_to" value="<?php echo $data['range_to']; ?>" style="width: 7em"></td>
-							<td><input type="number" step="0.01" name="offset" value="<?php echo $data['offset']; ?>" style="width: 7em"></td>
-							<td></td>
-							</tr>
-							
-							<tr>
-							<td><input name="show_port1" type="checkbox" <?php if(isset($data['show_port1']) and $data['show_port1'] == 'yes'){echo 'checked="checked"';} ?> value="yes" >&nbsp; Simulate</td>
-							<td><input name="show_port2" <?php if(isset($data['show_port2']) and $data['show_port2'] == 'yes'){echo 'checked="checked"';} ?> type="checkbox" value="yes" >&nbsp; Port2</td>
-							<td><input name="show_summary" <?php if(isset($data['show_summary']) and $data['show_summary'] == 'yes'){echo 'checked="checked"';} ?> type="checkbox" value="yes" >&nbsp; Summary</td>
-							<td><button type="button" onClick="javascript:calculate_value();"><?php echo $this->translate("Paint","default",$lang); ?></button></td>
-							</tr>
-							</table>
+						</script>
+						<?php 
+						/*if($data['port_id'] == ''){ ?>
+						<button type="button" data-toggle="modal" data-target="#modal_save_new_value" ><?php echo $this->translate("Save","default",$lang); ?></button>
+						<?php }else{ ?>
+						<button type="button" onClick="javascript:save_value();"><?php echo $this->translate("Save","default",$lang); ?></button>
+						<?php }*/ ?>
 						</div>
 						
-						<div class="col-md-12">
-						<?php if($data['range_from'] != '' and $data['range_to'] != '' and $data['offset'] > 0){ ?>
-							<div class="col-md-12">
-								<div class="row">
-								<div id="curve_chart" style="width: 100%; height: 500px"></div>
-								</div>
-								
-								<div id="table_chart" class="table-responsive" style="display:none;">
-								<table class="table" border="1">
-								<tr>
-									<th></th>
-									<?php 
-									$check_price = $data['range_from'];
-									while($check_price <= $data['range_to']){ ?>
-										<th><?php echo $check_price; ?></th>
-										<?php $check_price = $check_price + $data['offset'];
+						<div id="modal_save_new_value" class="modal fade" data-backdrop="static" >
+							<div class="modal-dialog modal-lg">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h5 class="modal-title">Please Input Value</h5>
+									</div>							
+									<div class="modal-body">							
+										<?php if($data['port_id'] == ''){ ?>
+										<div class="row">	
+											<div class="col-md-12">
+												<div class="form-group">
+													<label>Port Name</label>
+													<input type="text" class="form-control" name='port_name' value="" placeholder="Port Name">
+												</div>
+											</div>
+										</div>
+										<?php }else{ ?>
+											<input type="hidden" name='port_name' value="" placeholder="Port Name">
+										<?php } ?>
+										<div class="row">	
+											<div class="col-md-12">
+												<div class="form-group">
+													<label>Future/Contact</label>
+													<input type="text" class="form-control" name='new_future_contact' value="" placeholder="Future/Contact">
+												</div>
+											</div>
+										</div>
+										<div class="row">	
+											<div class="col-md-12">
+												<div class="form-group">
+													<label>Option/Contact</label>
+													<input type="text" class="form-control" name='new_option_contact' value="" placeholder="Option/Contact">
+												</div>
+											</div>
+										</div>
 										
-									} ?>
-								</tr>
-								
-								<?php if(!empty($Total) and $data['port_id'] != ''){ ?>
-									<tr>
-									<td><?php
-									$port_name = 'Simulate';
-									foreach($ResultPort as $result_port){ 
-										if($data['port_id'] == $result_port['port_id']){
-											$port_name = $result_port['port_name'];
-											break;
-										}
-									} 
-									echo $port_name;
-									?></td>
-									<?php foreach($Total as $check_price => $total){ ?>
-										<td><?php echo $total; ?></td>
-									<?php } ?>
-									</tr>
-								<?php } ?>
-								
-								<?php if(!empty($SumFuture)){ ?>
-									<tr class="detail_port1" style="display:none">
-									<td>Future</td>
-									<?php foreach($SumFuture as $check_price => $sum_future){ ?>
-										<td><?php echo $sum_future; ?></td>
-									<?php } ?>
-									</tr>
-								<?php } ?>
-								
-								<?php if(!empty($SumOption)){ ?>
-									<tr class="detail_port1" style="display:none">
-									<td>Option</td>
-									<?php foreach($SumOption as $check_price => $sum_option){ ?>
-										<td><?php echo $sum_option; ?></td>
-									<?php } ?>
-									</tr>
-								<?php } ?>
-								
-								<?php if(!empty($Total2) and $data['port_id2'] != ''){ ?>
-									<tr>
-									<td><?php
-									$port_name = 'Portfolio 2';
-									foreach($ResultPort as $result_port){ 
-										if($data['port_id2'] == $result_port['port_id']){
-											$port_name = $result_port['port_name'];
-											break;
-										}
-									} 
-									echo $port_name;
-									?></td>
-									<?php foreach($Total2 as $check_price => $total){ ?>
-										<td><?php echo $total; ?></td>
-									<?php } ?>
-									</tr>
-								<?php } ?>
-								
-								<?php if(!empty($SumFuture2)){ ?>
-									<tr class="detail_port1" style="display:none">
-									<td>Future</td>
-									<?php foreach($SumFuture2 as $check_price => $sum_future){ ?>
-										<td><?php echo $sum_future; ?></td>
-									<?php } ?>
-									</tr>
-								<?php } ?>
-								
-								<?php if(!empty($SumOption2)){ ?>
-									<tr class="detail_port1" style="display:none">
-									<td>Option</td>
-									<?php foreach($SumOption2 as $check_price => $sum_option){ ?>
-										<td><?php echo $sum_option; ?></td>
-									<?php } ?>
-									</tr>
-								<?php } ?>				
-								
-								<?php if(!empty($TotalSum)){ ?>
-									<tr>
-									<td>Summary</td>
-									<?php foreach($TotalSum as $check_price => $total_sum){ ?>
-										<td><?php echo $total_sum; ?></td>
-									<?php } ?>
-									</tr>
-								<?php } ?>
-								</table>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-link" data-dismiss="modal"><?php echo $this->translate("Close","default",$lang); ?></button>
+										<button type="button" class="btn btn-primary" onClick="javascript:save_value2();" ><?php echo $this->translate("Add Index","default",$lang); ?></button>
+									</div>
 								</div>
 							</div>
-						<?php } ?>
 						</div>
+					
+						
+						<?php if($data['range_from'] != '' and $data['range_to'] != '' and $data['offset'] > 0){ ?>
+						<div class="col-md-12">
+						
+						<div class="row">
+						<div id="curve_chart" style="width: 100%; height: 500px"></div>
+						</div>
+						
+						<div id="table_chart" class="table-responsive" style="display:none;">
+						<table class="table" border="1">
+						<tr>
+							<th></th>
+							<?php 
+							$check_price = $data['range_from'];
+							while($check_price <= $data['range_to']){ ?>
+								<th><?php echo $check_price; ?></th>
+								<?php $check_price = $check_price + $data['offset'];
+								
+							} ?>
+						</tr>
+						
+						<?php if(!empty($Total) and $data['port_id'] != ''){ ?>
+							<tr>
+							<td><?php
+							$port_name = 'Portfolio 1';
+							foreach($ResultPort as $result_port){ 
+								if($data['port_id'] == $result_port['port_id']){
+									$port_name = $result_port['port_name'];
+									break;
+								}
+							} 
+							echo $port_name;
+							?></td>
+							<?php foreach($Total as $check_price => $total){ ?>
+								<td><?php echo $total; ?></td>
+							<?php } ?>
+							</tr>
+						<?php } ?>
+						
+						<?php if(!empty($SumFuture)){ ?>
+							<tr class="detail_port1" style="display:none">
+							<td>Future</td>
+							<?php foreach($SumFuture as $check_price => $sum_future){ ?>
+								<td><?php echo $sum_future; ?></td>
+							<?php } ?>
+							</tr>
+						<?php } ?>
+						
+						<?php if(!empty($SumOption)){ ?>
+							<tr class="detail_port1" style="display:none">
+							<td>Option</td>
+							<?php foreach($SumOption as $check_price => $sum_option){ ?>
+								<td><?php echo $sum_option; ?></td>
+							<?php } ?>
+							</tr>
+						<?php } ?>
+						
+						<?php if(!empty($Total2) and $data['port_id2'] != ''){ ?>
+							<tr>
+							<td><?php
+							$port_name = 'Portfolio 2';
+							foreach($ResultPort as $result_port){ 
+								if($data['port_id2'] == $result_port['port_id']){
+									$port_name = $result_port['port_name'];
+									break;
+								}
+							} 
+							echo $port_name;
+							?></td>
+							<?php foreach($Total2 as $check_price => $total){ ?>
+								<td><?php echo $total; ?></td>
+							<?php } ?>
+							</tr>
+						<?php } ?>
+						
+						<?php if(!empty($SumFuture2)){ ?>
+							<tr class="detail_port1" style="display:none">
+							<td>Future</td>
+							<?php foreach($SumFuture2 as $check_price => $sum_future){ ?>
+								<td><?php echo $sum_future; ?></td>
+							<?php } ?>
+							</tr>
+						<?php } ?>
+						
+						<?php if(!empty($SumOption2)){ ?>
+							<tr class="detail_port1" style="display:none">
+							<td>Option</td>
+							<?php foreach($SumOption2 as $check_price => $sum_option){ ?>
+								<td><?php echo $sum_option; ?></td>
+							<?php } ?>
+							</tr>
+						<?php } ?>				
+						
+						<?php if(!empty($TotalSum)){ ?>
+							<tr>
+							<td>Summary</td>
+							<?php foreach($TotalSum as $check_price => $total_sum){ ?>
+								<td><?php echo $total_sum; ?></td>
+							<?php } ?>
+							</tr>
+						<?php } ?>
+						</table>
+						</div>
+						</div>
+						<?php } ?>
+					
 					</div>
-				
+			
 				</div>
 			</div>
+			<br/>
 			
+			<div class="panel panel-flat">
+				<div class="row" id="Portfolio1">
+					<div class="col-md-12">					
+						<table >
+						<tr>
+						<th>Portfolio 1 <a href="#" data-toggle="modal" data-target="#modal_add_port"><i class="icon-plus-circle2"></i></a></th>
+						</tr>					
+						<tr>
+						<td>
+						<select name="port_id" class="form-control" onchange="javascript:change_port();">
+							<option value="" <?php if($data['port_id'] == ''){ echo "selected='selected'"; } ?>>All Port</option>
+							<?php if(!empty($ResultPort)){foreach($ResultPort as $result_port){ ?>
+								<option value="<?php echo $result_port['port_id']; ?>" <?php if($data['port_id'] == $result_port['port_id']){ echo "selected='selected'"; } ?>><?php echo $result_port['port_name']; ?></option>
+							<?php }} ?>
+						</select>
+						</td>
+						</tr>
+						</table>
+					</div>
+				</div>
+				<?php if(isset($data['port_id']) and $data['port_id'] != ''){ ?>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="panel panel-flat">
+							<div class="panel-heading">
+								<h6 class="panel-title"><?php echo $this->translate("Future", "default", $lang); ?></h6>
+								
+								<div class="heading-elements">
+									<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_future_plan_1" ><?php echo $this->translate("Add","default",$lang); ?></button>
+								</div>
+							</div>
+							<div class="panel-body">
+							<div class="row">
+							<div class="col-md-8">
+							<?php echo $future_page_slide; ?>
+							</div>
+							<div class="col-md-4 text-right">
+							<?php echo $this->translate("Show", "default", $lang); ?>&nbsp;:&nbsp;&nbsp;<select name='per_page1' onchange="javascript:changePerPage(this.value);" >
+							   <option value='20' <?php if(!isset($data['per_page']) || $data['per_page'] == '20'){ echo "selected='selected'"; } ?> >20</option>
+							   <option value='50' <?php if(isset($data['per_page']) and $data['per_page'] == '50'){ echo "selected='selected'"; } ?> >50</option>
+							   <option value='100' <?php if(isset($data['per_page']) and $data['per_page'] == '100'){ echo "selected='selected'"; } ?> >100</option>
+							   <option value='200' <?php if(isset($data['per_page']) and $data['per_page'] == '200'){ echo "selected='selected'"; } ?> >200</option>
+							</select>&nbsp;&nbsp;<?php echo $this->translate("Items/Pages", "default", $lang); ?>
+							</div>
+							</div>
+							<div class="table-responsive">
+							<table width="100%" cellpadding="5" cellspacing="5" border="1" class="future-table">
+								<thead>
+								<tr>
+								<th style="padding-right:10px">ID</th>
+								<th style="padding-right:10px">Date</th>
+								<th style="padding-right:10px">Transaction</th>
+								<th style="padding-right:10px">Symbol</th>
+								<th style="padding-right:10px">Strike Price</th>
+								<th style="padding-right:10px">Amount</th>
+								</tr>
+								</thead>
+								
+								<tbody>
+								<?php if(isset($ResultFuturePlan) and !empty($ResultFuturePlan)){
+									$i = 1;
+									foreach($paginator_future1 as $id => $reault_future_plan){
+										$future_date = $reault_future_plan['date'];
+										$future_transaction_id = $reault_future_plan['transaction_id'];
+										$future_symbol = $reault_future_plan['symbol'];
+										$future_price = $reault_future_plan['price'];
+										$future_amount = $reault_future_plan['amount'];
+										?>
+										<tr>
+										<td><?php echo $i; ?></td>
+										<td><?php echo $future_date; ?></td>
+										<td><?php echo $future_transaction_id; ?></td>
+										<td><?php echo $future_symbol; ?></td>
+										<td><?php echo $future_price; ?></td>
+										<td><?php echo $future_amount; ?></td>
+										</tr>
+									<?php $i++; 
+									} ?>
+								<?php } ?>
+								</tbody>
+							</table>
+							
+							</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-md-6">
+						<div class="panel panel-flat">
+							<div class="panel-heading">
+								<h6 class="panel-title"><?php echo $this->translate("Option", "default", $lang); ?></h6>
+								<div class="heading-elements">
+									<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_option_plan_1" ><?php echo $this->translate("Add","default",$lang); ?></button>
+								</div>
+							</div>
+							<div class="panel-body">
+							<div class="row">
+							<div class="col-md-8">
+							<?php echo $option_page_slide; ?>
+							</div>
+							<div class="col-md-4 text-right">
+							<?php echo $this->translate("Show", "default", $lang); ?>&nbsp;:&nbsp;&nbsp;<select name='per_page2' onchange="javascript:changePerPage2(this.value);" >
+							   <option value='20' <?php if(!isset($data['per_page2']) || $data['per_page2'] == '20'){ echo "selected='selected'"; } ?> >20</option>
+							   <option value='50' <?php if(isset($data['per_page2']) and $data['per_page2'] == '50'){ echo "selected='selected'"; } ?> >50</option>
+							   <option value='100' <?php if(isset($data['per_page2']) and $data['per_page2'] == '100'){ echo "selected='selected'"; } ?> >100</option>
+							   <option value='200' <?php if(isset($data['per_page2']) and $data['per_page2'] == '200'){ echo "selected='selected'"; } ?> >200</option>
+							</select>&nbsp;&nbsp;<?php echo $this->translate("Items/Pages", "default", $lang); ?>
+							</div>
+							</div>
+							<div class="table-responsive">
+							<table width="100%" cellpadding="5" cellspacing="5" border="1" class="future-table">
+								<thead>
+								<tr>
+								<th style="padding-right:10px">Date</th>
+								<th style="padding-right:10px">Transaction</th>
+								<th style="padding-right:10px">Symbol</th>
+								<th style="padding-right:10px">Type</th>
+								<th style="padding-right:10px">Strike Price</th>
+								<th style="padding-right:10px">Premium</th>
+								<th style="padding-right:10px">Amount</th>
+								</tr>
+								</thead>
+								
+								<tbody>
+								
+								<?php if(isset($ResultOptionPlan) and !empty($ResultOptionPlan)){ 
+									foreach($paginator_option1 as $id => $result_option){ 
+										$option_date = $result_option['date'];
+										$option_transaction_id = $result_option['transaction_id'];
+										$option_symbol = $result_option['symbol'];
+										$option_type = $result_option['type'];
+										$option_price = $result_option['price'];
+										$option_premium = $result_option['premium'];
+										$option_amount = $result_option['amount'];
+										?>
+										<tr>
+										<td><?php echo $option_date; ?></td>
+										<td><?php echo $option_transaction_id; ?></td>
+										<td><?php echo $option_symbol; ?></td>
+										<td><?php echo $option_type; ?></td>
+										<td><?php echo $option_price; ?></td>
+										<td><?php echo $option_premium; ?></td>
+										<td><?php echo $option_amount; ?></td>
+										</tr>
+									<?php } ?>
+								<?php } ?>
+								
+								</tbody>
+							</table>
+							</div>							
+					
+							</div>
+						</div>
+					</div>
+				</div>	
+				<?php } ?>
+			</div>
+			<br/>
 			
 			<div class="panel panel-flat">
 				<div class="row" id="Portfolio2">
@@ -906,7 +758,7 @@ function delete_option1(id1)
 						<tr>
 						<td>
 						<select name="port_id2" class="form-control" onchange="javascript:change_port2();">
-							<option value="" <?php if($data['port_id2'] == ''){ echo "selected='selected'"; } ?>>Select Port</option>
+							<option value="" <?php if($data['port_id2'] == ''){ echo "selected='selected'"; } ?>>All Port</option>
 							<?php if(!empty($ResultPort)){foreach($ResultPort as $result_port){ ?>
 								<option value="<?php echo $result_port['port_id']; ?>" <?php if($data['port_id2'] == $result_port['port_id']){ echo "selected='selected'"; } ?>><?php echo $result_port['port_name']; ?></option>
 							<?php }} ?>
@@ -1057,6 +909,156 @@ function delete_option1(id1)
 			
 			</form>
 			
+			<form name="MyForm_Port1" >
+			<input type="hidden" name="baseUrl" value="<?php echo $baseUrl; ?>" >
+			<input type="hidden" name="mode" value="add_future_plan" >
+			<input type="hidden" name="port_id" value="<?php echo $data['port_id']; ?>" >
+			<input type="hidden" name="port_id2" value="<?php echo $data['port_id2']; ?>" >
+			<input type="hidden" name="future_contact" value="<?php echo $data['future_contact']; ?>" >
+			<input type="hidden" name="option_contact" value="<?php echo $data['option_contact']; ?>" >
+			<input type="hidden" name="date_from" value="<?php echo $data['date_from']; ?>" >
+			<input type="hidden" name="date_to" value="<?php echo $data['date_to']; ?>" >
+			
+			<input type="hidden" name="change_page_name" value="" >
+			<input type="hidden" name="change_page_value" value="" >
+			
+			<input type="hidden" name="page1" value="<?php echo $data['page1']; ?>">
+			<input type="hidden" name="per_page1" value="<?php echo $data['per_page1']; ?>">
+			<input type="hidden" name="page2" value="<?php echo $data['page2']; ?>">
+			<input type="hidden" name="per_page2" value="<?php echo $data['per_page2']; ?>">
+			<input type="hidden" name="page3" value="<?php echo $data['page3']; ?>">
+			<input type="hidden" name="per_page3" value="<?php echo $data['per_page3']; ?>">
+			<input type="hidden" name="page4" value="<?php echo $data['page4']; ?>">
+			<input type="hidden" name="per_page4" value="<?php echo $data['per_page4']; ?>">
+			<div id="modal_future_plan_1" class="modal fade" data-backdrop="static" >
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h5 class="modal-title">Add Future Plan</h5>
+						</div>
+						
+						<div class="modal-body">
+							<div class="row">	
+								<table cellpadding="0" cellspacing="0" border="0" class="future-table" id="FutureTable">
+									<thead>
+									<tr>
+									<th style="padding-right:10px">Date</th>
+									<th style="padding-right:10px">Transaction</th>
+									<th style="padding-right:10px">Symbol</th>
+									<th style="padding-right:10px">Strike Price</th>
+									<th style="padding-right:10px">Amount</th>
+									<th style="padding-let:10px">Delete</th>
+									</tr>
+									</thead>
+									
+									<tbody id="FutureTableBody">
+									<tr>
+										<td><input type="text" name="future_date[]" class="date_format" autocomplete="off" value=""size="10"></td>
+										<td><input type="text" name="future_transaction_id[]" value=""size="10"></td>
+										<td><input type="text" name="future_symbol[]" value=""size="10"></td>
+										<td><input type="text" name="future_price[]" required value=""size="10"></td>
+										<td><input type="text" name="future_amount[]" required value=""size="10"></td>
+										<td class="future-table__cell"><button class="future-table__del">x</button></td>
+									</tr>
+									</tbody>
+								</table>
+								<div class="future-table__add-row">
+									<span class="future-table__add"><i class="icon-plus-circle2" ></i> Add</span>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal"><?php echo $this->translate("Close","default",$lang); ?></button>
+							<button type="submit" class="btn btn-primary" ><?php echo $this->translate("Add","default",$lang); ?></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			</form>
+			
+			<form name="MyForm_Port1_Option" >
+			<input type="hidden" name="baseUrl" value="<?php echo $baseUrl; ?>" >
+			<input type="hidden" name="mode" value="add_option_plan" >
+			<input type="hidden" name="port_id" value="<?php echo $data['port_id']; ?>" >
+			<input type="hidden" name="port_id2" value="<?php echo $data['port_id2']; ?>" >
+			<input type="hidden" name="future_contact" value="<?php echo $data['future_contact']; ?>" >
+			<input type="hidden" name="option_contact" value="<?php echo $data['option_contact']; ?>" >
+			<input type="hidden" name="date_from" value="<?php echo $data['date_from']; ?>" >
+			<input type="hidden" name="date_to" value="<?php echo $data['date_to']; ?>" >
+			
+			<input type="hidden" name="change_page_name" value="" >
+			<input type="hidden" name="change_page_value" value="" >
+			
+			<input type="hidden" name="page1" value="<?php echo $data['page1']; ?>">
+			<input type="hidden" name="per_page1" value="<?php echo $data['per_page1']; ?>">
+			<input type="hidden" name="page2" value="<?php echo $data['page2']; ?>">
+			<input type="hidden" name="per_page2" value="<?php echo $data['per_page2']; ?>">
+			<input type="hidden" name="page3" value="<?php echo $data['page3']; ?>">
+			<input type="hidden" name="per_page3" value="<?php echo $data['per_page3']; ?>">
+			<input type="hidden" name="page4" value="<?php echo $data['page4']; ?>">
+			<input type="hidden" name="per_page4" value="<?php echo $data['per_page4']; ?>">
+			
+			<div id="modal_option_plan_1" class="modal fade" data-backdrop="static" >
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h5 class="modal-title">Add Option Plan</h5>
+						</div>
+						
+						<div class="modal-body">
+							<div class="row">	
+								<table cellpadding="0" cellspacing="0" border="0" class="future-table" id="OptionTable">
+									<thead>
+									<tr>
+									<th style="padding-right:10px">Date</th>
+									<th style="padding-right:10px">Transaction</th>
+									<th style="padding-right:10px">Symbol</th>
+									<th style="padding-right:10px">Type</th>
+									<th style="padding-right:10px">Strike Price</th>
+									<th style="padding-right:10px">Premium</th>
+									<th style="padding-right:10px">Amount</th>
+									<th style="padding-let:10px">Delete</th>
+									</tr>
+									</thead>
+									
+									<tbody id="OptionTableBody">
+									
+									<tr>
+										<td><input type="text" name="option_date[]" class="date_format" autocomplete="off" value=""size="10"></td>
+										<td><input type="text" name="option_transaction_id[]" value=""size="10"></td>
+										<td><input type="text" name="option_symbol[]" value=""size="10"></td>
+										<td>
+											<select name="option_type[]" required>
+											<option value="">Select</option>
+											<option value="Put">Put</option>
+											<option value="Call">Call</option>
+											</select>
+										</td>
+										<td><input type="text" name="option_price[]" required value=""size="10"></td>
+										<td><input type="text" name="option_premium[]" required value="" size="10"></td>
+										<td><input type="text" name="option_amount[]" required value="" size="10"></td>
+										<td class="option-table__cell"><button class="option-table__del">x</button></td>
+									</tr>
+									
+									</tbody>
+								</table>
+								<div class="option-table__add-row">
+									<span class="option-table__add"><i class="icon-plus-circle2" ></i> Add</span>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-dismiss="modal"><?php echo $this->translate("Close","default",$lang); ?></button>
+							<button type="submit" class="btn btn-primary"  ><?php echo $this->translate("Add","default",$lang); ?></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			</form>
+			
 			<form name="MyForm_Port2" >
 			<input type="hidden" name="baseUrl" value="<?php echo $baseUrl; ?>" >
 			<input type="hidden" name="mode" value="add_future_plan_2" >
@@ -1107,7 +1109,7 @@ function delete_option1(id1)
 										<td><input type="text" name="future_symbol[]" value=""size="10"></td>
 										<td><input type="text" name="future_price[]" required value=""size="10"></td>
 										<td><input type="text" name="future_amount[]" required value=""size="10"></td>
-										<td class="future-table__cell"><button type="button" class="future-table__del">x</button></td>
+										<td class="future-table__cell"><button class="future-table__del">x</button></td>
 									</tr>
 									</tbody>
 								</table>
@@ -1188,7 +1190,7 @@ function delete_option1(id1)
 										<td><input type="text" name="option_price[]" required value=""size="10"></td>
 										<td><input type="text" name="option_premium[]" required value="" size="10"></td>
 										<td><input type="text" name="option_amount[]" required value="" size="10"></td>
-										<td class="option-table__cell"><button type="button" class="option-table__del">x</button></td>
+										<td class="option-table__cell"><button class="option-table__del">x</button></td>
 									</tr>
 									
 									</tbody>
@@ -1236,14 +1238,12 @@ $(document).ready(function () {
 
 <script id="FutureTemplate" type="text/template">
 	<tr>
-		<td>
-		<input name="future_id[]" type="hidden" value="new">
-		<input type="text" name="future_date[]" class="date_format" autocomplete="off" value=""size="10"></td>
+		<td><input type="text" name="future_date[]" class="date_format" autocomplete="off" value=""size="10"></td>
 		<td><input type="text" name="future_transaction_id[]" value=""size="10"></td>
 		<td><input type="text" name="future_symbol[]" value=""size="10"></td>
 		<td><input type="text" name="future_price[]" required value=""size="10"></td>
 		<td><input type="text" name="future_amount[]" required value=""size="10"></td>
-		<td class="future-table__cell"><button type="button" class="future-table__del">x</button></td>
+		<td class="future-table__cell"><button class="future-table__del">x</button></td>
 	</tr>
 </script>
 
@@ -1271,9 +1271,7 @@ $(document).ready(function () {
 
 <script id="OptionTemplate" type="text/template">
 	<tr>
-		<td>
-		<input name="option_id[]" type="hidden" value="new">
-		<input type="text" name="option_date[]" class="date_format" autocomplete="off" value=""size="10"></td>
+		<td><input type="text" name="option_date[]" class="date_format" autocomplete="off" value=""size="10"></td>
 		<td><input type="text" name="option_transaction_id[]" value=""size="10"></td>
 		<td><input type="text" name="option_symbol[]" value=""size="10"></td>
 		<td>
@@ -1285,6 +1283,6 @@ $(document).ready(function () {
 		<td><input type="text" name="option_price[]" required value=""size="10"></td>
 		<td><input type="text" name="option_premium[]" required value="" size="10"></td>
 		<td><input type="text" name="option_amount[]" required value="" size="10"></td>
-		<td class="option-table__cell"><button type="button" class="option-table__del">x</button></td>
+		<td class="option-table__cell"><button class="option-table__del">x</button></td>
 	</tr>
 </script>
