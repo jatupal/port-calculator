@@ -259,7 +259,10 @@ class ReportsController extends AbstractActionController
 		$ReportSession->ResultOptionPlan2 = $ResultOptionPlan2;
 		
 		$ReportSession->data = $data;
-		if($mode == 'save_value' || $mode == 'changePerPage'){}
+		if($mode == 'save_value' || $mode == 'changePerPage'){
+			
+			
+		}
 		
 		if($mode == 'save_value2'){
 			$port_id = $data['port_id'];
@@ -350,6 +353,7 @@ class ReportsController extends AbstractActionController
 			
 			}else{
 			
+			echo 'future_id => '; var_dump($data['future_id']); echo '<br/><br/>';
 			if(isset($data['future_id']) and !empty($data['future_id'])){
 				foreach($data['future_id'] as $id => $future_id){
 					if($future_id == 'new'){
