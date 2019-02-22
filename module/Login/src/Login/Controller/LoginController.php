@@ -96,6 +96,8 @@ class LoginController extends AbstractActionController {
 		$loginForm = new LoginForm('loginForm');       
 		$loginForm->setInputFilter(new LoginFilter() );
 		
+		$ReportSession = new Container('ReportSession');
+		$ReportSession->getManager()->getStorage()->clear('ReportSession');  
 		$error_message = '';
 		if($request->isPost()){
 		    $data = $request->getPost();
@@ -166,6 +168,9 @@ class LoginController extends AbstractActionController {
         $session->getManager()->destroy();
         $this->getAuthService()->clearIdentity();
         
+		$ReportSession = new Container('ReportSession');
+		$ReportSession->getManager()->getStorage()->clear('ReportSession');  
+		
         //echo 'User ID -> '.$session->offsetGet ( 'user_id' ).'<BR>';
         //return $this->redirect()->toUrl('/login/login');
         return $this->redirect()->toRoute('login',
